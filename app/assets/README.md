@@ -1,0 +1,1 @@
+Place your game assets, like sound effects, music, and visuals, here.

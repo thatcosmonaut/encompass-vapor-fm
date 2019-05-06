@@ -1,0 +1,18 @@
+{
+    "defaultSeverity": "error",
+    "extends": [
+        "tslint:recommended",
+        "tslint-no-circular-imports"
+    ],
+    "jsRules": {},
+    "rules": {
+        "variable-name": [false, "allow-pascal-case", "allow-snake-case"],
+        "no-string-throw": [false],
+        "no-empty": [false],
+        "array-type": [false],
+        "no-var-requires": [false],
+        "object-literal-sort-keys": [false],
+        "forin": [false]
+    },
+    "rulesDirectory": []
+}
