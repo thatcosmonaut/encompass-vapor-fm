@@ -1,14 +1,32 @@
 import { World, WorldBuilder } from "encompass-ecs";
-import { AmbientLight, Mesh, MeshPhongMaterial, PerspectiveCamera, PointLight, Scene, WebGLRenderer } from "three";
+import {
+    AmbientLight,
+    BackSide,
+    BoxGeometry,
+    Geometry,
+    Line,
+    LineBasicMaterial,
+    Mesh,
+    MeshBasicMaterial,
+    MeshPhongMaterial,
+    PerspectiveCamera,
+    PointLight,
+    Scene,
+    Vector3,
+    WebGLRenderer,
+} from "three";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 import { AngularVelocityComponent } from "../components/angular_velocity";
+import { GrowthSpeedComponent } from "../components/growth_speed";
 import { ObjectComponent } from "../components/object_3d_component";
 import { SceneComponent } from "../components/scene";
 import { AngularVelocityEngine } from "../engines/angular_velocity";
+import { GrowthDetector } from "../engines/growth";
 import { NoiseShaderEngine } from "../engines/noise_shader";
-import { RotateEngine } from "../engines/rotate";
+import { TransformObjectEngine } from "../engines/transform_object";
 import { SceneRenderer } from "../renderers/scene";
 import { GameState } from "./gamestate";
+import { WrapScaleComponent } from "../components/wrap_scale";
 
 export class BustState extends GameState {
     private world: World;
@@ -18,14 +36,13 @@ export class BustState extends GameState {
         const world_builder = new WorldBuilder();
 
         world_builder.add_engine(NoiseShaderEngine);
-        world_builder.add_engine(RotateEngine);
         world_builder.add_engine(AngularVelocityEngine);
+        world_builder.add_engine(GrowthDetector);
+        world_builder.add_engine(TransformObjectEngine);
 
         world_builder.add_renderer(SceneRenderer).initialize(
             this.renderer,
         );
-
-        this.world = world_builder.build();
 
         const object_loader = new OBJLoader();
 
@@ -62,6 +79,45 @@ export class BustState extends GameState {
             object_component.object = object;
             scene_component.scene.add(object);
         });
+
+        const line_material = new LineBasicMaterial({color: 0xffffff, linewidth: 2});
+        for (let i = 0; i < 20; i++) {
+            const line_box_geometry = new Geometry();
+            line_box_geometry.vertices.push(new Vector3(-20, 10, -10));
+            line_box_geometry.vertices.push(new Vector3(20, 10, -10));
+            line_box_geometry.vertices.push(new Vector3(20, -10, -10));
+            line_box_geometry.vertices.push(new Vector3(-20, -10, -10));
+            line_box_geometry.vertices.push(new Vector3(-20, 10, -10));
+            const line_box = new Line(line_box_geometry, line_material);
+
+            const scale_factor = (i * 0.5) * 0.2;
+            line_box.scale.set(scale_factor, scale_factor, scale_factor);
+
+            scene_component.scene.add(line_box);
+
+            const line_entity = world_builder.create_entity();
+            const line_object_component = line_entity.add_component(ObjectComponent);
+            const grow_component = line_entity.add_component(GrowthSpeedComponent);
+            grow_component.x = 0.2;
+            grow_component.y = 0.2;
+            grow_component.z = 0.2;
+            const wrap_scale_component = line_entity.add_component(WrapScaleComponent);
+            wrap_scale_component.x = 1.5;
+            wrap_scale_component.y = 1.5;
+            wrap_scale_component.z = 1.5;
+            line_object_component.object = line_box;
+        }
+
+        const skybox_geometry = new BoxGeometry(500, 500, 500);
+        const skybox_material = new MeshBasicMaterial({color: 0x1100ff, side: BackSide});
+        const skybox = new Mesh(skybox_geometry, skybox_material);
+        scene_component.scene.add(skybox);
+
+        const skybox_entity = world_builder.create_entity();
+        const skybox_object_component = skybox_entity.add_component(ObjectComponent);
+        skybox_object_component.object = skybox;
+
+        this.world = world_builder.build();
     }
 
     public update(dt: number) {
