@@ -1,10 +1,10 @@
-import { WebGLRenderer } from "three";
+import { Engine } from "babylonjs";
 
 export class GameState {
-    protected renderer: WebGLRenderer;
+    protected engine: Engine;
 
-    constructor(renderer: WebGLRenderer) {
-        this.renderer = renderer;
+    constructor(engine: Engine) {
+        this.engine = engine;
     }
 
     public update(dt: number) {}

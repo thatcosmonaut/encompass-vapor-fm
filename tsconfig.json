@@ -12,6 +12,10 @@
     "strictPropertyInitialization": false,
     "sourceMap": true,
     "experimentalDecorators": true,
+    "types": [
+      "babylonjs",
+      "babylonjs-loaders"
+    ]
   },
   "include": [
     "node_modules/encompass-ecs",

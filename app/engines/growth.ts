@@ -1,14 +1,14 @@
 import { Detector, Emits, Entity } from "encompass-ecs";
 import { GrowthSpeedComponent } from "../components/growth_speed";
-import { ObjectComponent } from "../components/object_3d_component";
+import { MeshComponent } from "../components/mesh_component";
 import { GrowObjectMessage } from "../messages/component/grow_object";
 
 @Emits(GrowObjectMessage)
 export class GrowthDetector extends Detector {
-    public component_types = [ObjectComponent, GrowthSpeedComponent];
+    public component_types = [MeshComponent, GrowthSpeedComponent];
 
     public detect(entity: Entity, dt: number) {
-        const object_component = entity.get_component(ObjectComponent);
+        const object_component = entity.get_component(MeshComponent);
         const growth_speed_component = entity.get_component(GrowthSpeedComponent);
 
         const growth_message = this.emit_component_message(GrowObjectMessage, object_component);

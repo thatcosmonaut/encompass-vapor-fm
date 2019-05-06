@@ -1,8 +1,8 @@
 import { ComponentMessage, Message } from "encompass-ecs";
-import { ObjectComponent } from "../../components/object_3d_component";
+import { MeshComponent } from "../../components/mesh_component";
 
 export class GrowObjectMessage extends Message implements ComponentMessage {
-    public component: Readonly<ObjectComponent>;
+    public component: Readonly<MeshComponent>;
     public x: number;
     public y: number;
     public z: number;

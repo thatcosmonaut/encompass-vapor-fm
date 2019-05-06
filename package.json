@@ -8,7 +8,8 @@
     "copyassets": "shx cp -r ./game/assets ./build/game/assets",
     "copyencompass": "shx mkdir ./build/encompass-ecs && shx mv ./build/node_modules/encompass-ecs/encompass-ecs/init.lua ./build/encompass-ecs/init.lua && shx cp ./node_modules/encompass-ecs/encompass-ecs.lua ./build",
     "copytslibs": "npm run copyencompass && npm run copytstlgc && npm run copyjprof",
-    "build": "webpack"
+    "build": "webpack",
+    "start:dev": "webpack-dev-server"
   },
   "author": "ehemsley",
   "license": "UNLICENSED",
@@ -19,10 +20,12 @@
     "tslint-no-circular-imports": "^0.6.2",
     "typescript": "^3.4.5",
     "webpack": "^4.30.0",
-    "webpack-cli": "^3.3.2"
+    "webpack-cli": "^3.3.2",
+    "webpack-dev-server": "^3.3.1"
   },
   "dependencies": {
-    "encompass-ecs": "^0.21.0",
-    "three": "^0.104.0"
+    "babylonjs": "^4.0.3",
+    "babylonjs-loaders": "^4.0.3",
+    "encompass-ecs": "^0.21.0"
   }
 }

@@ -1,34 +1,33 @@
-import {
-    WebGLRenderer,
-    WebGLRenderTarget,
-} from "three";
+import { Engine } from "babylonjs";
 import { BustState } from "./states/bust";
 import { GameState } from "./states/gamestate";
 
 export class Page {
-    private renderer: WebGLRenderer;
     private current_state: GameState;
     private bust_state: BustState;
 
     public load() {
-        this.renderer = new WebGLRenderer();
-        this.renderer.setSize(window.innerWidth, window.innerHeight);
-        document.body.appendChild(this.renderer.domElement);
-        const render_target = new WebGLRenderTarget(window.innerWidth, window.innerHeight);
+        const canvas = document.getElementById("renderCanvas") as HTMLCanvasElement;
+        const engine = new Engine(canvas, true);
 
-        this.bust_state = new BustState(this.renderer);
+        this.bust_state = new BustState(engine);
         this.current_state = this.bust_state;
 
-        // const noise_shader_entity = world_builder.create_entity();
-        // noise_shader_entity.add_component(NoiseShaderComponent);
+        engine.runRenderLoop(() => {
+            this.update(engine.getDeltaTime() * 0.001);
+            this.draw();
+        });
+
+        window.addEventListener("resize", () => {
+            engine.resize();
+        });
     }
 
-    public update(dt: number) {
+    private update(dt: number) {
         this.current_state.update(dt);
     }
 
-    public draw() {
-        this.renderer.clear();
+    private draw() {
         this.current_state.draw();
     }
 }
