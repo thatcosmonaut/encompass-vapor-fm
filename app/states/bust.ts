@@ -1,5 +1,5 @@
 import { World, WorldBuilder } from "encompass-ecs";
-import { Engine as BabylonEngine, Scene, UniversalCamera, Vector3, HemisphericLight, PointLight, SceneLoader, MeshBuilder, StandardMaterial } from "babylonjs";
+import { Engine as BabylonEngine, Scene, UniversalCamera, Vector3, HemisphericLight, PointLight, SceneLoader, MeshBuilder, StandardMaterial, LinesBuilder, Color3, Mesh, PostProcess, BlurPostProcess, Vector2, BloomEffect, DefaultRenderingPipeline, Color4, SpotLight, PostProcessRenderPipeline } from "babylonjs";
 import { OBJFileLoader } from "babylonjs-loaders";
 import { AngularVelocityComponent } from "../components/angular_velocity";
 import { GrowthSpeedComponent } from "../components/growth_speed";
@@ -11,6 +11,7 @@ import { GrowthDetector } from "../engines/growth";
 import { TransformObjectEngine } from "../engines/transform_object";
 import { SceneRenderer } from "../renderers/scene";
 import { GameState } from "./gamestate";
+import { CRTShader } from "../assets/shaders/crt_shader";
 
 export class BustState extends GameState {
     private world: World;
@@ -35,6 +36,14 @@ export class BustState extends GameState {
         camera.fov = 1.3;
         const ambientLight = new HemisphericLight("ambientLight", new Vector3(0, 0, 1), scene_component.scene);
         const pointLight = new PointLight("pointLight", new Vector3(10, 20, 20), scene_component.scene);
+        const spotLight = new SpotLight(
+            "spotLight",
+            camera.position,
+            new Vector3(0, 0, 1),
+            Math.PI / 2,
+            0.1,
+            scene_component.scene,
+        );
 
         const model_entity = world_builder.create_entity();
         const object_component = model_entity.add_component(MeshComponent);
@@ -45,63 +54,70 @@ export class BustState extends GameState {
 
         SceneLoader.LoadAssetContainer("models/", "romanbustrecalc.obj", scene_component.scene, (container) => {
             const mesh = container.meshes[0];
-            mesh.material = new StandardMaterial("bustMaterial", scene_component.scene);
+            const material = new StandardMaterial("bustMaterial", scene_component.scene);
+            material.emissiveColor = new Color3(0.1, 0.1, 0.1);
+            material.diffuseColor = new Color3(0.95, 0.95, 0.95);
+            mesh.material = material;
             mesh.scaling.set(0.14, 0.14, 0.14);
             mesh.position.set(0, -3.5, 0);
             object_component.mesh = mesh;
             scene_component.scene.addMesh(mesh);
         });
 
-        // object_loader.load("models/romanbustrecalc.obj", (object) => {
-        //     const bustMaterial = new MeshPhongMaterial({color: 0xffffff, wireframe: false});
+        const line_material = new StandardMaterial("lineMaterial", scene_component.scene);
+        line_material.emissiveColor = new Color3(1, 1, 1);
 
-        //     object.traverse((child) => {
-        //         if (child instanceof Mesh) {
-        //             child.material = bustMaterial;
-        //         }
-        //     });
-        //     object.scale.set(0.14, 0.14, 0.14);
-        //     object.position.set(0, -3.5, 0);
-        //     object_component.object = object;
-        //     scene_component.scene.add(object);
+        for (let i = 0; i < 20; i++) {
+            const line_box_mesh = LinesBuilder.CreateLines("line " + i, {
+                points: [
+                    new Vector3(-20, 10, 10),
+                    new Vector3(20, 10, 10),
+                    new Vector3(20, -10, 10),
+                    new Vector3(-20, -10, 10),
+                    new Vector3(-20, 10, 10),
+                ],
+            });
+
+            line_box_mesh.enableEdgesRendering();
+            line_box_mesh.edgesWidth = 5;
+            line_box_mesh.edgesColor = new Color4(1, 1, 1, 1);
+
+            const scale_factor = (i * 0.5) * 0.2;
+            line_box_mesh.scaling.set(scale_factor, scale_factor, scale_factor);
+
+            scene_component.scene.addMesh(line_box_mesh);
+
+            const line_entity = world_builder.create_entity();
+            const line_object_component = line_entity.add_component(MeshComponent);
+            const grow_component = line_entity.add_component(GrowthSpeedComponent);
+            grow_component.x = 0.2;
+            grow_component.y = 0.2;
+            grow_component.z = 0.2;
+            const wrap_scale_component = line_entity.add_component(WrapScaleComponent);
+            wrap_scale_component.x = 1.5;
+            wrap_scale_component.y = 1.5;
+            wrap_scale_component.z = 1.5;
+            line_object_component.mesh = line_box_mesh;
+        }
+
+        // const skybox_mesh = MeshBuilder.CreateBox("skybox", {
+        //     size: 500,
+        //     sideOrientation: Mesh.BACKSIDE,
         // });
+        // const skybox_material = new StandardMaterial("skyboxMaterial", scene_component.scene);
+        // skybox_material.diffuseColor = new Color3(0.05, 1, 1);
 
-        // const line_material = new LineBasicMaterial({color: 0xffffff, linewidth: 2});
-        // for (let i = 0; i < 20; i++) {
-        //     const line_box_geometry = new Geometry();
-        //     line_box_geometry.vertices.push(new Vector3(-20, 10, -10));
-        //     line_box_geometry.vertices.push(new Vector3(20, 10, -10));
-        //     line_box_geometry.vertices.push(new Vector3(20, -10, -10));
-        //     line_box_geometry.vertices.push(new Vector3(-20, -10, -10));
-        //     line_box_geometry.vertices.push(new Vector3(-20, 10, -10));
-        //     const line_box = new Line(line_box_geometry, line_material);
+        // skybox_mesh.material = skybox_material;
+        // scene_component.scene.addMesh(skybox_mesh);
 
-        //     const scale_factor = (i * 0.5) * 0.2;
-        //     line_box.scale.set(scale_factor, scale_factor, scale_factor);
+        const pipeline = new DefaultRenderingPipeline("pipeline", true, scene_component.scene, [camera]);
+        pipeline.bloomEnabled = true;
+        pipeline.bloomThreshold = 0.8;
+        pipeline.bloomKernel = 64;
+        pipeline.bloomWeight = 0.3;
+        pipeline.bloomScale = 0.5;
 
-        //     scene_component.scene.add(line_box);
-
-        //     const line_entity = world_builder.create_entity();
-        //     const line_object_component = line_entity.add_component(ObjectComponent);
-        //     const grow_component = line_entity.add_component(GrowthSpeedComponent);
-        //     grow_component.x = 0.2;
-        //     grow_component.y = 0.2;
-        //     grow_component.z = 0.2;
-        //     const wrap_scale_component = line_entity.add_component(WrapScaleComponent);
-        //     wrap_scale_component.x = 1.5;
-        //     wrap_scale_component.y = 1.5;
-        //     wrap_scale_component.z = 1.5;
-        //     line_object_component.object = line_box;
-        // }
-
-        // const skybox_geometry = new BoxGeometry(500, 500, 500);
-        // const skybox_material = new MeshBasicMaterial({color: 0x1100ff, side: BackSide});
-        // const skybox = new Mesh(skybox_geometry, skybox_material);
-        // scene_component.scene.add(skybox);
-
-        // const skybox_entity = world_builder.create_entity();
-        // const skybox_object_component = skybox_entity.add_component(ObjectComponent);
-        // skybox_object_component.object = skybox;
+        scene_component.scene.clearColor = new Color4(0.1, 0, 1, 1);
 
         this.world = world_builder.build();
     }
