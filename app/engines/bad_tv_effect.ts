@@ -17,9 +17,9 @@ export class BadTVEffectEngine extends Engine {
         component.distortion2 = message.distortion2;
         component.rollSpeed = message.rollSpeed;
       }
-      component.distortion = Math.max(component.distortion - 0.1 * dt, 0.001);
-      component.distortion2 = Math.max(component.distortion2 - 0.1 * dt, 0.001);
-      component.rollSpeed = Math.max(component.rollSpeed - 0.1 * dt, 0);
+      component.distortion = Math.max(component.distortion - 1 * dt, 0.001);
+      component.distortion2 = Math.max(component.distortion2 - 1 * dt, 0.001);
+      component.rollSpeed = Math.max(component.rollSpeed - 0.6 * dt, 0);
     }
   }
 }

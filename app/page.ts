@@ -33,9 +33,12 @@ import { BustState } from "./states/bust";
 import { CybergridState } from "./states/cybergrid";
 import { DarkBustState } from "./states/dark_bust";
 import { GameState } from "./states/gamestate";
+import { StreamManager } from "./helpers/stream_manager";
 
 export class Page {
   private world: World;
+  private stream_manager: StreamManager;
+  private running = false;
 
   public load() {
     const canvas = document.getElementById("renderCanvas") as HTMLCanvasElement;
@@ -56,9 +59,11 @@ export class Page {
     world_builder.add_renderer(ChannelRenderer);
     world_builder.add_renderer(SceneRenderer);
 
-    const bust_state = new BustState(new Scene(engine));
-    const cybergrid_state = new CybergridState(new Scene(engine));
-    const dark_bust_state = new DarkBustState(new Scene(engine));
+    this.stream_manager = new StreamManager();
+
+    const bust_state = new BustState(new Scene(engine), this.stream_manager);
+    const cybergrid_state = new CybergridState(new Scene(engine), this.stream_manager);
+    const dark_bust_state = new DarkBustState(new Scene(engine), this.stream_manager);
 
     const channels = new Map<number, GameState>();
     channels.set(3, bust_state);
@@ -240,14 +245,39 @@ export class Page {
 
     this.world = world_builder.build();
 
-    engine.runRenderLoop(() => {
-      this.update(engine.getDeltaTime() * 0.001);
-      this.draw();
-    });
+    const run_engine = () => {
+      if (!this.running) {
+        engine.runRenderLoop(() => {
+          // if the user was tabbed out for a while dont want to get crazy values
+          if (engine.getDeltaTime() < 500) {
+            this.update(engine.getDeltaTime() * 0.001);
+            this.draw();
+          }
+        });
+        this.running = true;
+      }
+    }
+
+    document.addEventListener("click", () => {
+      if (!this.stream_manager.loading && !this.stream_manager.loaded) {
+        this.stream_manager.load_and_play_audio();
+      }
+    })
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) {
+        engine.stopRenderLoop();
+        this.running = false;
+      } else {
+        run_engine();
+      }
+    })
 
     window.addEventListener("resize", () => {
       engine.resize();
     });
+
+    run_engine();
   }
 
   private update(dt: number) {

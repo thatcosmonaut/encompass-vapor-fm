@@ -19,12 +19,13 @@ import { GrowthDetector } from "../engines/growth";
 import { TransformObjectEngine } from "../engines/transform_object";
 import { SceneRenderer } from "../renderers/scene";
 import { GameState } from "./gamestate";
+import { StreamManager } from "../helpers/stream_manager";
 
 export class DarkBustState extends GameState {
   private world: World;
 
-  public constructor(scene: Scene) {
-    super(scene);
+  public constructor(scene: Scene, stream_manager: StreamManager) {
+    super(scene, stream_manager);
     const world_builder = new WorldBuilder();
     world_builder.add_engine(AngularVelocityEngine);
     world_builder.add_engine(GrowthDetector);

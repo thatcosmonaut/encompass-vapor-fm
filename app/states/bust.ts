@@ -24,23 +24,39 @@ import { GrowthDetector } from "../engines/growth";
 import { TransformObjectEngine } from "../engines/transform_object";
 import { SceneRenderer } from "../renderers/scene";
 import { GameState } from "./gamestate";
+import { StreamManager } from "../helpers/stream_manager";
+import { StreamManagerComponent } from "../components/beat_detector";
+import { BeatDetectorEngine } from "../engines/beat_detector";
+import { BustBeatReactEngine } from "../engines/bust_beat_react";
+import { BustComponent } from "../components/bust";
+import { ShrinkToSizeComponent } from "../components/shrink_to_size";
+import { ShrinkToSizeEngine } from "../engines/shrink_to_size";
+import { ChangeAngularVelocityEngine } from "../engines/change_angular_velocity";
 
 export class BustState extends GameState {
   private world: World;
 
-  public constructor(scene: Scene) {
-    super(scene);
+  public constructor(scene: Scene, stream_manager: StreamManager) {
+    super(scene, stream_manager);
     const world_builder = new WorldBuilder();
 
     world_builder.add_engine(AngularVelocityEngine);
     world_builder.add_engine(GrowthDetector);
     world_builder.add_engine(TransformObjectEngine);
+    world_builder.add_engine(BeatDetectorEngine);
+    world_builder.add_engine(BustBeatReactEngine);
+    world_builder.add_engine(ShrinkToSizeEngine);
+    world_builder.add_engine(ChangeAngularVelocityEngine);
 
     world_builder.add_renderer(SceneRenderer);
 
     const scene_entity = world_builder.create_entity();
     const scene_component = scene_entity.add_component(SceneComponent);
     scene_component.scene = scene;
+
+    const stream_manager_entity = world_builder.create_entity();
+    const stream_manager_component = stream_manager_entity.add_component(StreamManagerComponent);
+    stream_manager_component.stream_manager = stream_manager;
 
     const obj_loader = new OBJFileLoader();
 
@@ -71,11 +87,15 @@ export class BustState extends GameState {
 
     const model_entity = world_builder.create_entity();
     const object_component = model_entity.add_component(MeshComponent);
+    const bust_component = model_entity.add_component(BustComponent);
+    const shrink_to_size_component = model_entity.add_component(ShrinkToSizeComponent);
+    shrink_to_size_component.rate = 0.02;
+    shrink_to_size_component.size = 0.14;
     const angular_velocity = model_entity.add_component(
       AngularVelocityComponent
     );
     angular_velocity.x = 0;
-    angular_velocity.y = 2;
+    angular_velocity.y = 1;
     angular_velocity.z = 0;
 
     SceneLoader.LoadAssetContainer(
