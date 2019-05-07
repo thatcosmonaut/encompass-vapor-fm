@@ -12,25 +12,24 @@ import {
 import { AdvancedDynamicTexture, Control, Image, TextBlock } from "babylonjs-gui";
 import { World, WorldBuilder } from "encompass-ecs";
 import { BadTVEffectComponent } from "./components/bad_tv_effect";
+import { ChannelsComponent } from "./components/channels";
 import { CRTEffectComponent } from "./components/crt_effect";
 import { IcecastTimerComponent } from "./components/icecast_timer";
 import { SceneComponent } from "./components/scene";
 import { TextUIComponent } from "./components/text_ui";
 import { BadTVEffectEngine } from "./engines/bad_tv_effect";
-import { ChangeChannelEngine } from "./engines/change_channel";
+import { ChannelUpdateEngine } from "./engines/channel_update";
 import { CRTEffectEngine } from "./engines/crt_effect";
 import { IcecastDataEngine } from "./engines/icecast_data";
 import { InputHandlerEngine } from "./engines/input_handler";
+import { ChannelRenderer } from "./renderers/channel";
 import { SceneRenderer } from "./renderers/scene";
 import { BustState } from "./states/bust";
 import { CybergridState } from "./states/cybergrid";
+import { DarkBustState } from "./states/dark_bust";
 import { GameState } from "./states/gamestate";
 
 export class Page {
-    private bust_state: BustState;
-    private cybergrid_state: CybergridState;
-    private current_channel = { current: 3 };
-    private channels = new Map<number, GameState>();
     private world: World;
 
     public load() {
@@ -41,21 +40,31 @@ export class Page {
         scene.clearColor = new Color4(0, 0, 0, 0);
         const camera = new UniversalCamera("camera", new Vector3(), scene);
 
-        this.bust_state = new BustState(new Scene(engine));
-        this.cybergrid_state = new CybergridState(new Scene(engine));
-
-        this.channels.set(3, this.bust_state);
-        this.channels.set(4, this.cybergrid_state);
-
         const world_builder = new WorldBuilder();
 
         world_builder.add_engine(IcecastDataEngine);
         world_builder.add_engine(InputHandlerEngine).initialize();
-        world_builder.add_engine(ChangeChannelEngine).initialize(this.current_channel);
+        world_builder.add_engine(ChannelUpdateEngine);
         world_builder.add_engine(CRTEffectEngine);
         world_builder.add_engine(BadTVEffectEngine);
 
+        world_builder.add_renderer(ChannelRenderer);
         world_builder.add_renderer(SceneRenderer);
+
+        const bust_state = new BustState(new Scene(engine));
+        const cybergrid_state = new CybergridState(new Scene(engine));
+        const dark_bust_state = new DarkBustState(new Scene(engine));
+
+        const channels = new Map<number, GameState>();
+        channels.set(3, bust_state);
+        channels.set(4, cybergrid_state);
+        channels.set(5, dark_bust_state);
+
+        const channels_entity = world_builder.create_entity();
+        const channels_component = channels_entity.add_component(ChannelsComponent);
+        channels_component.channels = channels;
+        channels_component.start_index = 3;
+        channels_component.current_index = 3;
 
         const scene_entity = world_builder.create_entity();
         scene_entity.add_component(SceneComponent).scene = scene;
@@ -71,13 +80,13 @@ export class Page {
         postProcess1.onApply = (effect) => {
             effect.setTextureFromPostProcess(
                 "sceneSampler0",
-                this.channels.get(this.current_channel.current)!.channelPass,
+                channels_component.channels.get(channels_component.current_index)!.channelPass,
             );
         };
 
         const ui = AdvancedDynamicTexture.CreateFullscreenUI("UI", true, scene);
 
-        const channel_number_outline = new TextBlock("channelNumOutline", this.current_channel.current.toString());
+        const channel_number_outline = new TextBlock("channelNumOutline", channels_component.current_index.toString());
         channel_number_outline.fontFamily = "TelegramaRaw";
         channel_number_outline.fontSize = 130;
         channel_number_outline.color = "black";
@@ -87,7 +96,7 @@ export class Page {
         channel_number_outline.left = -25;
         ui.addControl(channel_number_outline);
 
-        const channel_number = new TextBlock("channelNum", this.current_channel.current.toString());
+        const channel_number = new TextBlock("channelNum", channels_component.current_index.toString());
         channel_number.fontFamily = "TelegramaRaw";
         channel_number.fontSize = 120;
         channel_number.color = "white";
@@ -203,11 +212,9 @@ export class Page {
 
     private update(dt: number) {
         this.world.update(dt);
-        this.channels.get(this.current_channel.current)!.update(dt);
     }
 
     private draw() {
-        this.channels.get(this.current_channel.current)!.draw();
         this.world.draw();
     }
 }
