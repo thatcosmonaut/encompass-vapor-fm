@@ -1,12 +1,25 @@
-import { BlurPostProcess, Color4, DefaultRenderingPipeline, Engine, PostProcess, Scene, UniversalCamera, Vector2, Vector3 } from "babylonjs";
-import { AdvancedDynamicTexture, Control, TextBlock, Image } from "babylonjs-gui";
+import {
+    BlurPostProcess,
+    Color4,
+    DefaultRenderingPipeline,
+    Engine,
+    PostProcess,
+    Scene,
+    UniversalCamera,
+    Vector2,
+    Vector3,
+} from "babylonjs";
+import { AdvancedDynamicTexture, Control, Image, TextBlock } from "babylonjs-gui";
 import { World, WorldBuilder } from "encompass-ecs";
 import { BadTVEffectComponent } from "./components/bad_tv_effect";
 import { CRTEffectComponent } from "./components/crt_effect";
+import { IcecastTimerComponent } from "./components/icecast_timer";
 import { SceneComponent } from "./components/scene";
+import { TextUIComponent } from "./components/text_ui";
 import { BadTVEffectEngine } from "./engines/bad_tv_effect";
 import { ChangeChannelEngine } from "./engines/change_channel";
 import { CRTEffectEngine } from "./engines/crt_effect";
+import { IcecastDataEngine } from "./engines/icecast_data";
 import { InputHandlerEngine } from "./engines/input_handler";
 import { SceneRenderer } from "./renderers/scene";
 import { BustState } from "./states/bust";
@@ -36,6 +49,7 @@ export class Page {
 
         const world_builder = new WorldBuilder();
 
+        world_builder.add_engine(IcecastDataEngine);
         world_builder.add_engine(InputHandlerEngine).initialize();
         world_builder.add_engine(ChangeChannelEngine).initialize(this.current_channel);
         world_builder.add_engine(CRTEffectEngine);
@@ -93,17 +107,28 @@ export class Page {
         logo.top = -20;
         ui.addControl(logo);
 
+        const text_ui_entity = world_builder.create_entity();
+        const icecast_timer_component = text_ui_entity.add_component(IcecastTimerComponent);
+        icecast_timer_component.time_remaining = 0;
+
+        const artist_ui_component = text_ui_entity.add_component(TextUIComponent);
+        artist_ui_component.tag = "artist";
+
         const artist_name = new TextBlock("artistName", "kosumonotto");
         artist_name.fontFamily = "TelegramaRaw";
         artist_name.fontSize = 50;
         artist_name.color = "white";
         artist_name.textHorizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
         artist_name.textVerticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
-        artist_name.top = -55;
+        artist_name.top = -90;
         artist_name.left = 25;
         artist_name.outlineColor = "black";
         artist_name.outlineWidth = 10;
         ui.addControl(artist_name);
+        artist_ui_component.text_block = artist_name;
+
+        const song_ui_component = text_ui_entity.add_component(TextUIComponent);
+        song_ui_component.tag = "song";
 
         const song_name = new TextBlock("artistName", "really really really really really long");
         song_name.fontFamily = "TelegramaRaw";
@@ -113,11 +138,13 @@ export class Page {
         song_name.outlineWidth = 10;
         song_name.textHorizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
         song_name.textVerticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
+        song_name.top = -20;
         song_name.left = 25;
         ui.addControl(song_name);
+        song_ui_component.text_block = song_name;
 
-        new BlurPostProcess("horzBlur", new Vector2(1.0, 0), 16, 2.0, camera);
-        new BlurPostProcess("vertBlur", new Vector2(0, 1.0), 16, 2.0, camera);
+        const horz_blur = new BlurPostProcess("horzBlur", new Vector2(1.0, 0), 16, 2.0, camera);
+        const vert_blur = new BlurPostProcess("vertBlur", new Vector2(0, 1.0), 16, 2.0, camera);
 
         const pipeline = new DefaultRenderingPipeline("pipeline", true);
         pipeline.bloomEnabled = true;
@@ -143,7 +170,7 @@ export class Page {
         bad_tv_component.distortion = 0.1;
         bad_tv_component.distortion2 = 0.2;
         bad_tv_component.speed = 0.1;
-        bad_tv_component.rollSpeed = 1.0;
+        bad_tv_component.rollSpeed = 0;
         const bad_tv = new PostProcess(
             "badTV",
             "./assets/shaders/badTVShader",
