@@ -1,1 +1,3 @@
-export interface ICurrentChannel { current: number; }
+export interface ICurrentChannel {
+  current: number;
+}
