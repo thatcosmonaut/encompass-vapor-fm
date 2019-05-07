@@ -1,6 +1,19 @@
-import { World, WorldBuilder } from "encompass-ecs";
-import { Engine as BabylonEngine, Scene, UniversalCamera, Vector3, HemisphericLight, PointLight, SceneLoader, MeshBuilder, StandardMaterial, LinesBuilder, Color3, Mesh, PostProcess, BlurPostProcess, Vector2, BloomEffect, DefaultRenderingPipeline, Color4, SpotLight, PostProcessRenderPipeline } from "babylonjs";
+import {
+    Color3,
+    Color4,
+    HemisphericLight,
+    LinesBuilder,
+    PassPostProcess,
+    PointLight,
+    Scene,
+    SceneLoader,
+    SpotLight,
+    StandardMaterial,
+    UniversalCamera,
+    Vector3,
+} from "babylonjs";
 import { OBJFileLoader } from "babylonjs-loaders";
+import { World, WorldBuilder } from "encompass-ecs";
 import { AngularVelocityComponent } from "../components/angular_velocity";
 import { GrowthSpeedComponent } from "../components/growth_speed";
 import { MeshComponent } from "../components/mesh_component";
@@ -11,13 +24,12 @@ import { GrowthDetector } from "../engines/growth";
 import { TransformObjectEngine } from "../engines/transform_object";
 import { SceneRenderer } from "../renderers/scene";
 import { GameState } from "./gamestate";
-import { CRTShader } from "../assets/shaders/crt_shader";
 
 export class BustState extends GameState {
     private world: World;
 
-    public constructor(engine: BabylonEngine) {
-        super(engine);
+    public constructor(scene: Scene) {
+        super(scene);
         const world_builder = new WorldBuilder();
 
         world_builder.add_engine(AngularVelocityEngine);
@@ -28,7 +40,7 @@ export class BustState extends GameState {
 
         const scene_entity = world_builder.create_entity();
         const scene_component = scene_entity.add_component(SceneComponent);
-        scene_component.scene = new Scene(engine);
+        scene_component.scene = scene;
 
         const obj_loader = new OBJFileLoader();
 
@@ -52,7 +64,7 @@ export class BustState extends GameState {
         angular_velocity.y = 2;
         angular_velocity.z = 0;
 
-        SceneLoader.LoadAssetContainer("models/", "romanbustrecalc.obj", scene_component.scene, (container) => {
+        SceneLoader.LoadAssetContainer("assets/models/", "romanbustrecalc.obj", scene_component.scene, (container) => {
             const mesh = container.meshes[0];
             const material = new StandardMaterial("bustMaterial", scene_component.scene);
             material.emissiveColor = new Color3(0.1, 0.1, 0.1);
@@ -100,22 +112,7 @@ export class BustState extends GameState {
             line_object_component.mesh = line_box_mesh;
         }
 
-        // const skybox_mesh = MeshBuilder.CreateBox("skybox", {
-        //     size: 500,
-        //     sideOrientation: Mesh.BACKSIDE,
-        // });
-        // const skybox_material = new StandardMaterial("skyboxMaterial", scene_component.scene);
-        // skybox_material.diffuseColor = new Color3(0.05, 1, 1);
-
-        // skybox_mesh.material = skybox_material;
-        // scene_component.scene.addMesh(skybox_mesh);
-
-        const pipeline = new DefaultRenderingPipeline("pipeline", true, scene_component.scene, [camera]);
-        pipeline.bloomEnabled = true;
-        pipeline.bloomThreshold = 0.8;
-        pipeline.bloomKernel = 64;
-        pipeline.bloomWeight = 0.3;
-        pipeline.bloomScale = 0.5;
+        this.channelPass = new PassPostProcess("pass", 1.0, camera);
 
         scene_component.scene.clearColor = new Color4(0.1, 0, 1, 1);
 

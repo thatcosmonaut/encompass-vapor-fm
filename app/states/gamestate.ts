@@ -1,13 +1,14 @@
-import { Engine } from "babylonjs";
+import { PostProcess, Scene } from "babylonjs";
 
-export class GameState {
-    protected engine: Engine;
+export abstract class GameState {
+    public channelPass: PostProcess;
+    protected scene: Scene;
 
-    constructor(engine: Engine) {
-        this.engine = engine;
+    constructor(scene: Scene) {
+        this.scene = scene;
     }
 
-    public update(dt: number) {}
+    public abstract update(dt: number): void;
 
-    public draw() {}
+    public abstract draw(): void;
 }
