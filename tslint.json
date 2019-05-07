@@ -2,17 +2,20 @@
     "defaultSeverity": "error",
     "extends": [
         "tslint:recommended",
-        "tslint-no-circular-imports"
+        "tslint-no-circular-imports",
+        "tsling-config-prettier"
     ],
     "jsRules": {},
     "rules": {
+        "max-line-length": [true, 120],
         "variable-name": [false, "allow-pascal-case", "allow-snake-case"],
         "no-string-throw": [false],
         "no-empty": [false],
         "array-type": [false],
         "no-var-requires": [false],
         "object-literal-sort-keys": [false],
-        "forin": [false]
+        "forin": [false],
+        "prettier": true
     },
     "rulesDirectory": []
 }

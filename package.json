@@ -5,6 +5,10 @@
   "main": "main.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "npm run lint:tslint && npm run lint:prettier",
+    "lint:prettier": "prettier --check ./app/**/*.{js,ts,ymljson} || (echo 'Run `npm run fix:prettier` to fix it.' && exit 1)",
+    "lint:tslint": "tslint -p .",
+    "fix:prettier": "prettier --check --write ./app/**/*.{js,ts,yml,json}",
     "copyassets": "shx cp -r ./game/assets ./build/game/assets",
     "copyencompass": "shx mkdir ./build/encompass-ecs && shx mv ./build/node_modules/encompass-ecs/encompass-ecs/init.lua ./build/encompass-ecs/init.lua && shx cp ./node_modules/encompass-ecs/encompass-ecs.lua ./build",
     "copytslibs": "npm run copyencompass && npm run copytstlgc && npm run copyjprof",
@@ -14,6 +18,7 @@
   "author": "ehemsley",
   "license": "UNLICENSED",
   "devDependencies": {
+    "prettier": "^1.17.0",
     "shx": "^0.3.2",
     "ts-loader": "^5.4.5",
     "tslint": "^5.15.0",
