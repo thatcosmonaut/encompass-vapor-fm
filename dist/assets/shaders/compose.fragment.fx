@@ -9,7 +9,7 @@ void main(void)
 {
     vec4 orig = texture2D(sceneSampler0, vUV);
     vec4 dest = texture2D(textureSampler, vUV);
-    vec4 final = orig * 1.0 + dest * 0.0;
+    vec4 final = orig * 1.0 + dest * 1.0;
     final.a = 1.0;
     gl_FragColor = final;
 }

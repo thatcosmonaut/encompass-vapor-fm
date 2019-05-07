@@ -1,4 +1,4 @@
-import { BlurPostProcess, DefaultRenderingPipeline, Engine, PostProcess, Scene, UniversalCamera, Vector2, Vector3 } from "babylonjs";
+import { BlurPostProcess, DefaultRenderingPipeline, Engine, PostProcess, Scene, UniversalCamera, Vector2, Vector3, Color4 } from "babylonjs";
 import { World, WorldBuilder } from "encompass-ecs";
 import { BadTVEffectComponent } from "./components/bad_tv_effect";
 import { CRTEffectComponent } from "./components/crt_effect";
@@ -11,6 +11,7 @@ import { SceneRenderer } from "./renderers/scene";
 import { BustState } from "./states/bust";
 import { CybergridState } from "./states/cybergrid";
 import { GameState } from "./states/gamestate";
+import { AdvancedDynamicTexture, TextBlock, Control } from "babylonjs-gui";
 
 export class Page {
     private bust_state: BustState;
@@ -24,6 +25,7 @@ export class Page {
         const engine = new Engine(canvas, true);
 
         const scene = new Scene(engine);
+        scene.clearColor = new Color4(0, 0, 0, 0);
         const camera = new UniversalCamera("camera", new Vector3(), scene);
 
         this.bust_state = new BustState(new Scene(engine));
@@ -58,6 +60,16 @@ export class Page {
                 this.channels.get(this.current_channel.current)!.channelPass,
             );
         };
+
+        const ui = AdvancedDynamicTexture.CreateFullscreenUI("UI", true, scene);
+        const text = new TextBlock("channelNum", this.current_channel.current.toString());
+        text.fontFamily = "TelegramaRaw";
+        text.fontSize = 120;
+        text.color = "white";
+        text.textHorizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT;
+        text.textVerticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
+        text.top = 20;
+        ui.addControl(text);
 
         new BlurPostProcess("horzBlur", new Vector2(1.0, 0), 16, 2.0, camera);
         new BlurPostProcess("vertBlur", new Vector2(0, 1.0), 16, 2.0, camera);

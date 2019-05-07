@@ -14,6 +14,7 @@
     "experimentalDecorators": true,
     "types": [
       "babylonjs",
+      "babylonjs-gui",
       "babylonjs-loaders"
     ]
   },
