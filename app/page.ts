@@ -1,5 +1,5 @@
 import { BlurPostProcess, Color4, DefaultRenderingPipeline, Engine, PostProcess, Scene, UniversalCamera, Vector2, Vector3 } from "babylonjs";
-import { AdvancedDynamicTexture, Control, TextBlock } from "babylonjs-gui";
+import { AdvancedDynamicTexture, Control, TextBlock, Image } from "babylonjs-gui";
 import { World, WorldBuilder } from "encompass-ecs";
 import { BadTVEffectComponent } from "./components/bad_tv_effect";
 import { CRTEffectComponent } from "./components/crt_effect";
@@ -16,7 +16,7 @@ import { GameState } from "./states/gamestate";
 export class Page {
     private bust_state: BustState;
     private cybergrid_state: CybergridState;
-    private current_channel = { current: 4 };
+    private current_channel = { current: 3 };
     private channels = new Map<number, GameState>();
     private world: World;
 
@@ -62,14 +62,59 @@ export class Page {
         };
 
         const ui = AdvancedDynamicTexture.CreateFullscreenUI("UI", true, scene);
-        const text = new TextBlock("channelNum", this.current_channel.current.toString());
-        text.fontFamily = "TelegramaRaw";
-        text.fontSize = 120;
-        text.color = "white";
-        text.textHorizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT;
-        text.textVerticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
-        text.top = 20;
-        ui.addControl(text);
+
+        const channel_number_outline = new TextBlock("channelNumOutline", this.current_channel.current.toString());
+        channel_number_outline.fontFamily = "TelegramaRaw";
+        channel_number_outline.fontSize = 130;
+        channel_number_outline.color = "black";
+        channel_number_outline.textHorizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT;
+        channel_number_outline.textVerticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
+        channel_number_outline.top = 10;
+        channel_number_outline.left = -25;
+        ui.addControl(channel_number_outline);
+
+        const channel_number = new TextBlock("channelNum", this.current_channel.current.toString());
+        channel_number.fontFamily = "TelegramaRaw";
+        channel_number.fontSize = 120;
+        channel_number.color = "white";
+        channel_number.textHorizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT;
+        channel_number.textVerticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
+        channel_number.top = 10;
+        channel_number.left = -20;
+        ui.addControl(channel_number);
+
+        const logo = new Image("logo", "/assets/images/logo.png");
+        logo.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT;
+        logo.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
+        logo.alpha = 0.5;
+        logo.width = "100px";
+        logo.height = "100px";
+        logo.left = -20;
+        logo.top = -20;
+        ui.addControl(logo);
+
+        const artist_name = new TextBlock("artistName", "kosumonotto");
+        artist_name.fontFamily = "TelegramaRaw";
+        artist_name.fontSize = 50;
+        artist_name.color = "white";
+        artist_name.textHorizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
+        artist_name.textVerticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
+        artist_name.top = -55;
+        artist_name.left = 25;
+        artist_name.outlineColor = "black";
+        artist_name.outlineWidth = 10;
+        ui.addControl(artist_name);
+
+        const song_name = new TextBlock("artistName", "really really really really really long");
+        song_name.fontFamily = "TelegramaRaw";
+        song_name.fontSize = 50;
+        song_name.color = "white";
+        song_name.outlineColor = "black";
+        song_name.outlineWidth = 10;
+        song_name.textHorizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
+        song_name.textVerticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
+        song_name.left = 25;
+        ui.addControl(song_name);
 
         new BlurPostProcess("horzBlur", new Vector2(1.0, 0), 16, 2.0, camera);
         new BlurPostProcess("vertBlur", new Vector2(0, 1.0), 16, 2.0, camera);
