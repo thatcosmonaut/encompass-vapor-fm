@@ -1,4 +1,5 @@
-import { BlurPostProcess, DefaultRenderingPipeline, Engine, PostProcess, Scene, UniversalCamera, Vector2, Vector3, Color4 } from "babylonjs";
+import { BlurPostProcess, Color4, DefaultRenderingPipeline, Engine, PostProcess, Scene, UniversalCamera, Vector2, Vector3 } from "babylonjs";
+import { AdvancedDynamicTexture, Control, TextBlock } from "babylonjs-gui";
 import { World, WorldBuilder } from "encompass-ecs";
 import { BadTVEffectComponent } from "./components/bad_tv_effect";
 import { CRTEffectComponent } from "./components/crt_effect";
@@ -11,7 +12,6 @@ import { SceneRenderer } from "./renderers/scene";
 import { BustState } from "./states/bust";
 import { CybergridState } from "./states/cybergrid";
 import { GameState } from "./states/gamestate";
-import { AdvancedDynamicTexture, TextBlock, Control } from "babylonjs-gui";
 
 export class Page {
     private bust_state: BustState;
