@@ -16,27 +16,31 @@ import {
   TextBlock
 } from "babylonjs-gui";
 import { World, WorldBuilder } from "encompass-ecs";
+import { BustState } from "./channels/bust";
+import { Channel } from "./channels/channel";
+import { CybergridState } from "./channels/cybergrid";
+import { DarkBustState } from "./channels/dark_bust";
+import { StartChannel } from "./channels/start";
 import { BadTVEffectComponent } from "./components/bad_tv_effect";
+import { ChannelNumberComponent } from "./components/channel_number";
 import { ChannelsComponent } from "./components/channels";
 import { CRTEffectComponent } from "./components/crt_effect";
 import { IcecastTimerComponent } from "./components/icecast_timer";
 import { SceneComponent } from "./components/scene";
-import { TextUIComponent } from "./components/text_ui";
+import { ArtistInfoUIComponent } from "./components/ui/artist_info";
+import { LogoUIComponent } from "./components/ui/logo";
+import { SongInfoUIComponent } from "./components/ui/song_info";
 import { BadTVEffectEngine } from "./engines/bad_tv_effect";
 import { ChannelUpdateEngine } from "./engines/channel_update";
 import { CRTEffectEngine } from "./engines/crt_effect";
 import { IcecastDataEngine } from "./engines/icecast_data";
 import { InputHandlerEngine } from "./engines/input_handler";
+import { ChannelNumberDisplayEngine } from "./engines/ui/channel_number_display";
+import { TrackInfoDisplayEngine } from "./engines/ui/track_info_display";
+import { StreamManager } from "./helpers/stream_manager";
 import { ChannelRenderer } from "./renderers/channel";
 import { SceneRenderer } from "./renderers/scene";
-import { BustState } from "./channels/bust";
-import { CybergridState } from "./channels/cybergrid";
-import { DarkBustState } from "./channels/dark_bust";
-import { Channel } from "./channels/channel";
-import { StreamManager } from "./helpers/stream_manager";
-import { StartChannel } from "./channels/start";
-import { ChannelNumberDisplayEngine } from "./engines/ui/channel_number_display";
-import { ChannelNumberComponent } from "./components/channel_number";
+import { LogoDisplayEngine } from "./engines/ui/logo_display";
 
 export class Page {
   private world: World;
@@ -59,6 +63,8 @@ export class Page {
     world_builder.add_engine(CRTEffectEngine);
     world_builder.add_engine(BadTVEffectEngine);
     world_builder.add_engine(ChannelNumberDisplayEngine);
+    world_builder.add_engine(TrackInfoDisplayEngine);
+    world_builder.add_engine(LogoDisplayEngine);
 
     world_builder.add_renderer(ChannelRenderer);
     world_builder.add_renderer(SceneRenderer);
@@ -140,6 +146,8 @@ export class Page {
     channel_number_component.text_block = channel_number_text;
     channel_number_component.time = 0;
 
+    const logo_entity = world_builder.create_entity();
+    const logo_component = logo_entity.add_component(LogoUIComponent);
     const logo = new Image("logo", "/assets/images/logo.png");
     logo.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT;
     logo.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
@@ -150,6 +158,7 @@ export class Page {
     logo.top = -20;
     logo.isVisible = false;
     ui.addControl(logo);
+    logo_component.image = logo;
 
     const text_ui_entity = world_builder.create_entity();
     const icecast_timer_component = text_ui_entity.add_component(
@@ -157,8 +166,7 @@ export class Page {
     );
     icecast_timer_component.time_remaining = 0;
 
-    const artist_ui_component = text_ui_entity.add_component(TextUIComponent);
-    artist_ui_component.tag = "artist";
+    const artist_ui_component = text_ui_entity.add_component(ArtistInfoUIComponent);
 
     const artist_name = new TextBlock("artistName", "kosumonotto");
     artist_name.fontFamily = "TelegramaRaw";
@@ -174,8 +182,7 @@ export class Page {
     ui.addControl(artist_name);
     artist_ui_component.text_block = artist_name;
 
-    const song_ui_component = text_ui_entity.add_component(TextUIComponent);
-    song_ui_component.tag = "song";
+    const song_ui_component = text_ui_entity.add_component(SongInfoUIComponent);
 
     const song_name = new TextBlock(
       "artistName",

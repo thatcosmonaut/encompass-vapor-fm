@@ -3,6 +3,7 @@ import { GCOptimizedMap } from "tstl-gc-optimized-collections";
 import { ChangeChannelMessage } from "../messages/change_channel";
 import { TogglePauseMessage } from "../messages/pause";
 import { ShowChannelNumberMessage } from "../messages/show_channel_number";
+import { ShowUIMessage } from "../messages/show_ui";
 
 enum KeyState {
   Up,
@@ -11,7 +12,12 @@ enum KeyState {
   Released
 }
 
-@Emits(ChangeChannelMessage, TogglePauseMessage, ShowChannelNumberMessage)
+@Emits(
+  ChangeChannelMessage,
+  TogglePauseMessage,
+  ShowChannelNumberMessage,
+  ShowUIMessage,
+)
 export class InputHandlerEngine extends Engine {
   private key_states = new GCOptimizedMap<number, KeyState>();
 
@@ -34,6 +40,12 @@ export class InputHandlerEngine extends Engine {
   }
 
   public update() {
+    for (const [key_code, key_state] of this.key_states.iterable()) {
+      if (key_state === KeyState.Pressed) {
+        this.emit_message(ShowUIMessage);
+      }
+    }
+
     if (this.key_pressed(32)) {
       this.emit_message(TogglePauseMessage);
     }
