@@ -18,10 +18,10 @@ import { AngularVelocityEngine } from "../engines/angular_velocity";
 import { GrowthDetector } from "../engines/growth";
 import { TransformObjectEngine } from "../engines/transform_object";
 import { SceneRenderer } from "../renderers/scene";
-import { GameState } from "./gamestate";
+import { Channel } from "./channel";
 import { StreamManager } from "../helpers/stream_manager";
 
-export class DarkBustState extends GameState {
+export class DarkBustState extends Channel {
   private world: World;
 
   public constructor(scene: Scene, stream_manager: StreamManager) {

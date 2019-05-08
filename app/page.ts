@@ -29,11 +29,12 @@ import { IcecastDataEngine } from "./engines/icecast_data";
 import { InputHandlerEngine } from "./engines/input_handler";
 import { ChannelRenderer } from "./renderers/channel";
 import { SceneRenderer } from "./renderers/scene";
-import { BustState } from "./states/bust";
-import { CybergridState } from "./states/cybergrid";
-import { DarkBustState } from "./states/dark_bust";
-import { GameState } from "./states/gamestate";
+import { BustState } from "./channels/bust";
+import { CybergridState } from "./channels/cybergrid";
+import { DarkBustState } from "./channels/dark_bust";
+import { Channel } from "./channels/channel";
 import { StreamManager } from "./helpers/stream_manager";
+import { StartChannel } from "./channels/start";
 
 export class Page {
   private world: World;
@@ -61,11 +62,13 @@ export class Page {
 
     this.stream_manager = new StreamManager();
 
+    const start_channel = new StartChannel(new Scene(engine), this.stream_manager);
     const bust_state = new BustState(new Scene(engine), this.stream_manager);
     const cybergrid_state = new CybergridState(new Scene(engine), this.stream_manager);
     const dark_bust_state = new DarkBustState(new Scene(engine), this.stream_manager);
 
-    const channels = new Map<number, GameState>();
+    const channels = new Map<number, Channel>();
+    channels.set(2, start_channel);
     channels.set(3, bust_state);
     channels.set(4, cybergrid_state);
     channels.set(5, dark_bust_state);
@@ -73,8 +76,8 @@ export class Page {
     const channels_entity = world_builder.create_entity();
     const channels_component = channels_entity.add_component(ChannelsComponent);
     channels_component.channels = channels;
-    channels_component.start_index = 3;
-    channels_component.current_index = 3;
+    channels_component.start_index = 2;
+    channels_component.current_index = 2;
 
     const scene_entity = world_builder.create_entity();
     scene_entity.add_component(SceneComponent).scene = scene;
@@ -176,20 +179,20 @@ export class Page {
     ui.addControl(song_name);
     song_ui_component.text_block = song_name;
 
-    const horz_blur = new BlurPostProcess(
-      "horzBlur",
-      new Vector2(1.0, 0),
-      16,
-      2.0,
-      camera
-    );
-    const vert_blur = new BlurPostProcess(
-      "vertBlur",
-      new Vector2(0, 1.0),
-      16,
-      2.0,
-      camera
-    );
+    // const horz_blur = new BlurPostProcess(
+    //   "horzBlur",
+    //   new Vector2(1.0, 0),
+    //   16,
+    //   2.0,
+    //   camera
+    // );
+    // const vert_blur = new BlurPostProcess(
+    //   "vertBlur",
+    //   new Vector2(0, 1.0),
+    //   16,
+    //   2.0,
+    //   camera
+    // );
 
     const pipeline = new DefaultRenderingPipeline("pipeline", true);
     pipeline.bloomEnabled = true;

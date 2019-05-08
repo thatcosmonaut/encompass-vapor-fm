@@ -23,7 +23,7 @@ import { AngularVelocityEngine } from "../engines/angular_velocity";
 import { GrowthDetector } from "../engines/growth";
 import { TransformObjectEngine } from "../engines/transform_object";
 import { SceneRenderer } from "../renderers/scene";
-import { GameState } from "./gamestate";
+import { Channel } from "./channel";
 import { StreamManager } from "../helpers/stream_manager";
 import { StreamManagerComponent } from "../components/beat_detector";
 import { BeatDetectorEngine } from "../engines/beat_detector";
@@ -33,7 +33,7 @@ import { ShrinkToSizeComponent } from "../components/shrink_to_size";
 import { ShrinkToSizeEngine } from "../engines/shrink_to_size";
 import { ChangeAngularVelocityEngine } from "../engines/change_angular_velocity";
 
-export class BustState extends GameState {
+export class BustState extends Channel {
   private world: World;
 
   public constructor(scene: Scene, stream_manager: StreamManager) {

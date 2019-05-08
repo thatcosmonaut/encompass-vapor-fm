@@ -11,3 +11,14 @@ canvas { display: block; width: 100%; height: 100%; }
     font-weight: normal;
     font-style: normal;
   }
+
+@font-face {
+    font-family: 'DolphinOceanWave';
+    src: url('/assets/fonts/dolphin_ocean_wave.eot');
+    src: url('/assets/fonts/dolphin_ocean_wave.eot?#iefix') format('embedded-opentype'),
+         url('/assets/fonts/dolphin_ocean_wave.woff2') format('woff2'),
+         url('/assets/fonts/dolphin_ocean_wave.woff') format('woff'),
+         url('/assets/fonts/dolphin_ocean_wave.ttf')  format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}

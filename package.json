@@ -18,6 +18,7 @@
   "author": "ehemsley",
   "license": "UNLICENSED",
   "devDependencies": {
+    "ccapture.js": "github:aceslowman/ccapture.js#npm-fix",
     "prettier": "^1.17.0",
     "shx": "^0.3.2",
     "ts-loader": "^5.4.5",

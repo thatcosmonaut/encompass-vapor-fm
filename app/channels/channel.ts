@@ -1,7 +1,7 @@
 import { PostProcess, Scene } from "babylonjs";
 import { StreamManager } from "../helpers/stream_manager";
 
-export abstract class GameState {
+export abstract class Channel {
   public channelPass: PostProcess;
   protected scene: Scene;
   protected stream_manager: StreamManager;

@@ -16,10 +16,10 @@ import { SceneComponent } from "../components/scene";
 import { AngularVelocityEngine } from "../engines/angular_velocity";
 import { TransformObjectEngine } from "../engines/transform_object";
 import { SceneRenderer } from "../renderers/scene";
-import { GameState } from "./gamestate";
+import { Channel } from "./channel";
 import { StreamManager } from "../helpers/stream_manager";
 
-export class CybergridState extends GameState {
+export class CybergridState extends Channel {
   private world: World;
 
   public constructor(scene: Scene, stream_manager: StreamManager) {
