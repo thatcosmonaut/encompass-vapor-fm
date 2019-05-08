@@ -2,6 +2,7 @@ import { Emits, Engine } from "encompass-ecs";
 import { GCOptimizedMap } from "tstl-gc-optimized-collections";
 import { ChangeChannelMessage } from "../messages/change_channel";
 import { TogglePauseMessage } from "../messages/pause";
+import { ShowChannelNumberMessage } from "../messages/show_channel_number";
 
 enum KeyState {
   Up,
@@ -10,7 +11,7 @@ enum KeyState {
   Released
 }
 
-@Emits(ChangeChannelMessage, TogglePauseMessage)
+@Emits(ChangeChannelMessage, TogglePauseMessage, ShowChannelNumberMessage)
 export class InputHandlerEngine extends Engine {
   private key_states = new GCOptimizedMap<number, KeyState>();
 
@@ -38,11 +39,13 @@ export class InputHandlerEngine extends Engine {
     }
 
     if (this.key_pressed(37)) {
+      this.emit_message(ShowChannelNumberMessage);
       const message = this.emit_message(ChangeChannelMessage);
       message.amount = -1;
     }
 
     if (this.key_pressed(39)) {
+      this.emit_message(ShowChannelNumberMessage);
       const message = this.emit_message(ChangeChannelMessage);
       message.amount = 1;
     }

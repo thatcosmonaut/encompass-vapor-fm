@@ -1,6 +1,6 @@
 import { Channel } from "./channel";
 import { World, WorldBuilder } from "encompass-ecs";
-import { Scene, PassPostProcess, UniversalCamera, Vector3, Color4, MeshBuilder, PostProcess, BaseTexture, Texture } from "babylonjs";
+import { Scene, PassPostProcess, UniversalCamera, Vector3, Color4, MeshBuilder, PostProcess, BaseTexture, Texture, FxaaPostProcess } from "babylonjs";
 import { StreamManager } from "../helpers/stream_manager";
 import { SceneComponent } from "../components/scene";
 import { SceneRenderer } from "../renderers/scene";
@@ -57,6 +57,29 @@ export class StartChannel extends Channel {
         line.color = "#6ba8e5";
         ui.addControl(line);
 
+        const spacebar_instructions = new TextBlock("spacebar", "Spacebar| Toggle Play");
+        spacebar_instructions.fontFamily = "DolphinOceanWave";
+        spacebar_instructions.fontSize = 32;
+        spacebar_instructions.color = "white";
+        spacebar_instructions.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
+        spacebar_instructions.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
+        spacebar_instructions.outlineColor = "black";
+        spacebar_instructions.outlineWidth = 2;
+        spacebar_instructions.top = 50;
+        ui.addControl(spacebar_instructions);
+
+        const right_arrow = new TextBlock("rightArrow", "Right Arrow / Change Channel");
+        right_arrow.fontFamily = "DolphinOceanWave";
+        right_arrow.fontSize = 32;
+        right_arrow.color = "white";
+        right_arrow.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
+        right_arrow.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
+        right_arrow.outlineColor = "black";
+        right_arrow.outlineWidth = 2;
+        right_arrow.top = 100;
+        ui.addControl(right_arrow);
+
+        /*
         const text = new TextBlock("pressAnyKey", "Press any key to begin");
         text.fontFamily = "DolphinOceanWave";
         text.fontSize = 32;
@@ -67,6 +90,9 @@ export class StartChannel extends Channel {
         text.outlineColor = "black";
         text.outlineWidth = 2;
         ui.addControl(text);
+        */
+
+        //new FxaaPostProcess("fxaa", 1.0, camera);
 
         const postprocess_entity = world_builder.create_entity();
         const ripple_component = postprocess_entity.add_component(RippleEffectComponent);

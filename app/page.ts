@@ -35,6 +35,8 @@ import { DarkBustState } from "./channels/dark_bust";
 import { Channel } from "./channels/channel";
 import { StreamManager } from "./helpers/stream_manager";
 import { StartChannel } from "./channels/start";
+import { ChannelNumberDisplayEngine } from "./engines/ui/channel_number_display";
+import { ChannelNumberComponent } from "./components/channel_number";
 
 export class Page {
   private world: World;
@@ -56,6 +58,7 @@ export class Page {
     world_builder.add_engine(ChannelUpdateEngine);
     world_builder.add_engine(CRTEffectEngine);
     world_builder.add_engine(BadTVEffectEngine);
+    world_builder.add_engine(ChannelNumberDisplayEngine);
 
     world_builder.add_renderer(ChannelRenderer);
     world_builder.add_renderer(SceneRenderer);
@@ -100,33 +103,42 @@ export class Page {
 
     const ui = AdvancedDynamicTexture.CreateFullscreenUI("UI", true, scene);
 
-    const channel_number_outline = new TextBlock(
+    const channel_number_entity = world_builder.create_entity();
+    const channel_number_outline_component = channel_number_entity.add_component(ChannelNumberComponent);
+    const channel_number_outline_text = new TextBlock(
       "channelNumOutline",
       channels_component.current_index.toString()
     );
-    channel_number_outline.fontFamily = "TelegramaRaw";
-    channel_number_outline.fontSize = 130;
-    channel_number_outline.color = "black";
-    channel_number_outline.textHorizontalAlignment =
+    channel_number_outline_text.fontFamily = "TelegramaRaw";
+    channel_number_outline_text.fontSize = 130;
+    channel_number_outline_text.color = "black";
+    channel_number_outline_text.textHorizontalAlignment =
       Control.HORIZONTAL_ALIGNMENT_RIGHT;
-    channel_number_outline.textVerticalAlignment =
+    channel_number_outline_text.textVerticalAlignment =
       Control.VERTICAL_ALIGNMENT_TOP;
-    channel_number_outline.top = 10;
-    channel_number_outline.left = -25;
-    ui.addControl(channel_number_outline);
+    channel_number_outline_text.top = 10;
+    channel_number_outline_text.left = -25;
+    channel_number_outline_text.isVisible = false;
+    ui.addControl(channel_number_outline_text);
+    channel_number_outline_component.text_block = channel_number_outline_text;
+    channel_number_outline_component.time = 0;
 
-    const channel_number = new TextBlock(
+    const channel_number_component = channel_number_entity.add_component(ChannelNumberComponent);
+    const channel_number_text = new TextBlock(
       "channelNum",
       channels_component.current_index.toString()
     );
-    channel_number.fontFamily = "TelegramaRaw";
-    channel_number.fontSize = 120;
-    channel_number.color = "white";
-    channel_number.textHorizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT;
-    channel_number.textVerticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
-    channel_number.top = 10;
-    channel_number.left = -20;
-    ui.addControl(channel_number);
+    channel_number_text.fontFamily = "TelegramaRaw";
+    channel_number_text.fontSize = 120;
+    channel_number_text.color = "white";
+    channel_number_text.textHorizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT;
+    channel_number_text.textVerticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
+    channel_number_text.top = 10;
+    channel_number_text.left = -20;
+    channel_number_text.isVisible = false;
+    ui.addControl(channel_number_text);
+    channel_number_component.text_block = channel_number_text;
+    channel_number_component.time = 0;
 
     const logo = new Image("logo", "/assets/images/logo.png");
     logo.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT;
@@ -136,6 +148,7 @@ export class Page {
     logo.height = "100px";
     logo.left = -20;
     logo.top = -20;
+    logo.isVisible = false;
     ui.addControl(logo);
 
     const text_ui_entity = world_builder.create_entity();
@@ -157,6 +170,7 @@ export class Page {
     artist_name.left = 25;
     artist_name.outlineColor = "black";
     artist_name.outlineWidth = 10;
+    artist_name.isVisible = false;
     ui.addControl(artist_name);
     artist_ui_component.text_block = artist_name;
 
@@ -176,6 +190,7 @@ export class Page {
     song_name.textVerticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
     song_name.top = -20;
     song_name.left = 25;
+    song_name.isVisible = false;
     ui.addControl(song_name);
     song_ui_component.text_block = song_name;
 

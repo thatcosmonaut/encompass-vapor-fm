@@ -1,12 +1,13 @@
 import { Emits, Engine, Mutates, Reads } from "encompass-ecs";
 import { ChannelsComponent } from "../components/channels";
+import { PauseComponent } from "../components/pause_component";
 import { BadTVDistortionMessage } from "../messages/bad_tv_distortion";
 import { ChangeChannelMessage } from "../messages/change_channel";
+import { ChangeChannelNumberMessage } from "../messages/change_channel_number";
 import { TogglePauseMessage } from "../messages/pause";
-import { PauseComponent } from "../components/pause_component";
 
 @Reads(ChangeChannelMessage, TogglePauseMessage)
-@Emits(BadTVDistortionMessage)
+@Emits(BadTVDistortionMessage, ChangeChannelNumberMessage)
 @Mutates(ChannelsComponent)
 export class ChannelUpdateEngine extends Engine {
   public update(dt: number) {
@@ -42,6 +43,8 @@ export class ChannelUpdateEngine extends Engine {
         else if (component.current_index < component.start_index) {
           component.current_index = component.start_index + component.channels.size - 1;
         }
+
+        this.emit_message(ChangeChannelNumberMessage).channel_number = component.current_index;
 
         const message = this.emit_message(BadTVDistortionMessage);
         message.distortion = 1;
