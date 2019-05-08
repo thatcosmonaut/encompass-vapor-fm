@@ -48,7 +48,7 @@ export class ChannelUpdateEngine extends Engine {
 
         const message = this.emit_message(BadTVDistortionMessage);
         message.distortion = 1;
-        message.distortion2 = 1;
+        message.distortion2 = 10;
         message.rollSpeed = 0.1;
       }
 
