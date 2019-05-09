@@ -1,9 +1,14 @@
 import { Emits, Engine } from "encompass-ecs";
 import { GCOptimizedMap } from "tstl-gc-optimized-collections";
+import { ActivatedStreamComponent } from "../components/activated_stream";
+import { StartedComponent } from "../components/started";
 import { ChangeChannelMessage } from "../messages/change_channel";
+import { DeactivateStreamMessage } from "../messages/deactivate_stream";
+import { LoadStreamMessage } from "../messages/load_stream";
 import { TogglePauseMessage } from "../messages/pause";
 import { ShowChannelNumberMessage } from "../messages/show_channel_number";
 import { ShowUIMessage } from "../messages/show_ui";
+import { StartMessage } from "../messages/start_message";
 
 enum KeyState {
   Up,
@@ -17,6 +22,9 @@ enum KeyState {
   TogglePauseMessage,
   ShowChannelNumberMessage,
   ShowUIMessage,
+  LoadStreamMessage,
+  DeactivateStreamMessage,
+  StartMessage,
 )
 export class InputHandlerEngine extends Engine {
   private key_states = new GCOptimizedMap<number, KeyState>();
@@ -40,26 +48,42 @@ export class InputHandlerEngine extends Engine {
   }
 
   public update() {
+    const started = this.read_components(StartedComponent).size !== 0;
+    const activated = this.read_components(ActivatedStreamComponent).size !== 0;
+
     for (const [key_code, key_state] of this.key_states.iterable()) {
       if (key_state === KeyState.Pressed) {
         this.emit_message(ShowUIMessage);
+        if (!started) {
+          this.emit_message(StartMessage);
+          this.emit_message(LoadStreamMessage);
+        }
       }
     }
 
     if (this.key_pressed(32)) {
-      this.emit_message(TogglePauseMessage);
+      if (started) {
+        this.emit_message(TogglePauseMessage);
+        if (activated) {
+          this.emit_message(DeactivateStreamMessage);
+        } else {
+          this.emit_message(LoadStreamMessage);
+        }
+      }
     }
 
-    if (this.key_pressed(37)) {
-      this.emit_message(ShowChannelNumberMessage);
-      const message = this.emit_message(ChangeChannelMessage);
-      message.amount = -1;
-    }
+    if (activated) {
+      if (this.key_pressed(37)) {
+        this.emit_message(ShowChannelNumberMessage);
+        const message = this.emit_message(ChangeChannelMessage);
+        message.amount = -1;
+      }
 
-    if (this.key_pressed(39)) {
-      this.emit_message(ShowChannelNumberMessage);
-      const message = this.emit_message(ChangeChannelMessage);
-      message.amount = 1;
+      if (this.key_pressed(39)) {
+        this.emit_message(ShowChannelNumberMessage);
+        const message = this.emit_message(ChangeChannelMessage);
+        message.amount = 1;
+      }
     }
 
     for (const [key, key_state] of this.key_states.iterable()) {

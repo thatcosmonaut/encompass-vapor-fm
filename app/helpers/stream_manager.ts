@@ -1,17 +1,17 @@
 import { BeatDetector } from "./beat_detector";
 
 export class StreamManager {
-    context: AudioContext;
-    public analyser: AnalyserNode;
-    public frequencyData: Uint8Array;
-    public floats: Float32Array;
-
     public beat_detector: BeatDetector;
 
-    audio_element: HTMLAudioElement;
-    loading: boolean;
-    loaded: boolean;
-    load_check_timeout: number;
+    private audio_element: HTMLAudioElement;
+    private context: AudioContext;
+    private analyser: AnalyserNode;
+    private frequencyData: Uint8Array;
+    private floats: Float32Array;
+
+    private loading: boolean;
+    private loaded: boolean;
+    private load_check_timeout: number;
 
     constructor() {
         this.loading = false;
@@ -21,16 +21,7 @@ export class StreamManager {
         this.stop_and_unload_audio();
     }
 
-    init_audio_context() {
-        this.context = new AudioContext();
-        this.analyser = this.context.createAnalyser();
-        this.analyser.fftSize = 2048;
-        this.analyser.smoothingTimeConstant = 0.85;
-        this.frequencyData = new Uint8Array(this.analyser.frequencyBinCount);
-        this.floats = new Float32Array(this.analyser.frequencyBinCount);
-    }
-
-    update() {
+    public update() {
         if (this.loaded) {
             this.analyser.getByteFrequencyData(this.frequencyData);
             this.analyser.getFloatTimeDomainData(this.floats);
@@ -38,7 +29,7 @@ export class StreamManager {
         }
     }
 
-    stop_and_unload_audio() {
+    public stop_and_unload_audio() {
         window.clearTimeout(this.load_check_timeout);
 
         this.audio_element.pause();
@@ -48,7 +39,7 @@ export class StreamManager {
         this.audio_element.remove();
         this.audio_element = document.createElement("audio");
         this.audio_element.setAttribute("id", "stream");
-        this.audio_element.setAttribute("preload", "none");
+        // this.audio_element.setAttribute("preload", "none");
         this.audio_element.setAttribute("crossorigin", "anonymous");
         document.getElementById("audioContainer")!.append(this.audio_element);
         this.audio_element = document.getElementById("stream") as HTMLAudioElement;
@@ -61,31 +52,39 @@ export class StreamManager {
         this.loading = false;
     }
 
-    add_stalled_listener() {
+    public load_and_play_audio() {
+        this.init_audio_context();
+        this.loading = true;
+        // this.audio_element.setAttribute("preload", "auto"); //firefox hack
+        this.audio_element.load();
+        window.clearTimeout(this.load_check_timeout);
+        this.load_check_timeout = window.setTimeout(this.check_loaded, 8000);
+    }
+
+    private init_audio_context() {
+        this.context = new AudioContext();
+        this.analyser = this.context.createAnalyser();
+        this.analyser.fftSize = 2048;
+        this.analyser.smoothingTimeConstant = 0.85;
+        this.frequencyData = new Uint8Array(this.analyser.frequencyBinCount);
+        this.floats = new Float32Array(this.analyser.frequencyBinCount);
+    }
+
+    private add_stalled_listener() {
         this.audio_element.addEventListener("stalled", () => {
             this.stop_and_unload_audio();
             this.load_and_play_audio();
         });
     }
 
-    load_and_play_audio() {
-        console.log("starting stream");
-        this.init_audio_context();
-        this.loading = true;
-        this.audio_element.setAttribute("preload", "auto"); //firefox hack
-        this.audio_element.load();
-        window.clearTimeout(this.load_check_timeout);
-        this.load_check_timeout = window.setTimeout(this.check_loaded, 8000);
-    }
-
-    check_loaded() {
+    private check_loaded() {
         if (this.loading) {
             this.audio_element.load();
             this.load_check_timeout = window.setTimeout(this.check_loaded, 8000);
         }
     }
 
-    add_can_play_listener() {
+    private add_can_play_listener() {
         const audio_loaded = new Event("audioLoaded");
         const listener = () => {
             window.dispatchEvent(audio_loaded);

@@ -22,6 +22,7 @@ import { CybergridState } from "./channels/cybergrid";
 import { DarkBustState } from "./channels/dark_bust";
 import { StartChannel } from "./channels/start";
 import { BadTVEffectComponent } from "./components/bad_tv_effect";
+import { StreamManagerComponent } from "./components/beat_detector";
 import { ChannelNumberComponent } from "./components/channel_number";
 import { ChannelsComponent } from "./components/channels";
 import { CRTEffectComponent } from "./components/crt_effect";
@@ -35,12 +36,14 @@ import { ChannelUpdateEngine } from "./engines/channel_update";
 import { CRTEffectEngine } from "./engines/crt_effect";
 import { IcecastDataEngine } from "./engines/icecast_data";
 import { InputHandlerEngine } from "./engines/input_handler";
+import { StartEngine } from "./engines/start";
+import { StreamEngine } from "./engines/stream";
 import { ChannelNumberDisplayEngine } from "./engines/ui/channel_number_display";
+import { LogoDisplayEngine } from "./engines/ui/logo_display";
 import { TrackInfoDisplayEngine } from "./engines/ui/track_info_display";
 import { StreamManager } from "./helpers/stream_manager";
 import { ChannelRenderer } from "./renderers/channel";
 import { SceneRenderer } from "./renderers/scene";
-import { LogoDisplayEngine } from "./engines/ui/logo_display";
 
 export class Page {
   private world: World;
@@ -65,11 +68,14 @@ export class Page {
     world_builder.add_engine(ChannelNumberDisplayEngine);
     world_builder.add_engine(TrackInfoDisplayEngine);
     world_builder.add_engine(LogoDisplayEngine);
+    world_builder.add_engine(StreamEngine);
+    world_builder.add_engine(StartEngine);
 
     world_builder.add_renderer(ChannelRenderer);
     world_builder.add_renderer(SceneRenderer);
 
     this.stream_manager = new StreamManager();
+    world_builder.create_entity().add_component(StreamManagerComponent).stream_manager = this.stream_manager;
 
     const start_channel = new StartChannel(new Scene(engine), this.stream_manager);
     const bust_state = new BustState(new Scene(engine), this.stream_manager);
@@ -283,11 +289,11 @@ export class Page {
       }
     }
 
-    document.addEventListener("click", () => {
-      if (!this.stream_manager.loading && !this.stream_manager.loaded) {
-        this.stream_manager.load_and_play_audio();
-      }
-    })
+    // document.addEventListener("click", () => {
+    //   if (!this.stream_manager.loading && !this.stream_manager.loaded) {
+    //     this.stream_manager.load_and_play_audio();
+    //   }
+    // })
 
     document.addEventListener("visibilitychange", () => {
       if (document.hidden) {
