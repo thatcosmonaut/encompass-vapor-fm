@@ -1,6 +1,6 @@
 import { Engine, Reads } from "encompass-ecs";
-import { StartMessage } from "../messages/start_message";
 import { StartedComponent } from "../components/started";
+import { StartMessage } from "../messages/start_message";
 
 @Reads(StartMessage)
 export class StartEngine extends Engine {

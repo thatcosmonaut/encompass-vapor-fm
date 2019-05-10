@@ -2,27 +2,33 @@ import { BeatDetector } from "./beat_detector";
 
 export class StreamManager {
     public beat_detector: BeatDetector;
+    private _loading: boolean;
+    private _loaded: boolean;
 
     private audio_element: HTMLAudioElement;
     private context: AudioContext;
     private analyser: AnalyserNode;
     private frequencyData: Uint8Array;
     private floats: Float32Array;
-
-    private loading: boolean;
-    private loaded: boolean;
     private load_check_timeout: number;
 
+    get loading() {
+        return this._loading;
+    }
+
+    get loaded() {
+        return this._loaded;
+    }
+
     constructor() {
-        this.loading = false;
+        this._loading = false;
         this.audio_element = document.getElementById("stream") as HTMLAudioElement;
 
-        this.add_can_play_listener();
         this.stop_and_unload_audio();
     }
 
     public update() {
-        if (this.loaded) {
+        if (this._loaded) {
             this.analyser.getByteFrequencyData(this.frequencyData);
             this.analyser.getFloatTimeDomainData(this.floats);
             this.beat_detector.update(this.floats);
@@ -45,16 +51,16 @@ export class StreamManager {
         this.audio_element = document.getElementById("stream") as HTMLAudioElement;
         this.audio_element.src = original_src;
 
-        this.add_can_play_listener();
-        this.add_stalled_listener();
-
-        this.loaded = false;
-        this.loading = false;
+        this._loaded = false;
+        this._loading = false;
     }
 
     public load_and_play_audio() {
         this.init_audio_context();
-        this.loading = true;
+        this.add_can_play_listener();
+        this.add_stalled_listener();
+
+        this._loading = true;
         // this.audio_element.setAttribute("preload", "auto"); //firefox hack
         this.audio_element.load();
         window.clearTimeout(this.load_check_timeout);
@@ -78,7 +84,7 @@ export class StreamManager {
     }
 
     private check_loaded() {
-        if (this.loading) {
+        if (this._loading) {
             this.audio_element.load();
             this.load_check_timeout = window.setTimeout(this.check_loaded, 8000);
         }
@@ -88,8 +94,8 @@ export class StreamManager {
         const audio_loaded = new Event("audioLoaded");
         const listener = () => {
             window.dispatchEvent(audio_loaded);
-            this.loaded = true;
-            this.loading = false;
+            this._loaded = true;
+            this._loading = false;
             const source = this.context.createMediaElementSource(this.audio_element);
             source.connect(this.analyser);
             source.connect(this.context.destination);

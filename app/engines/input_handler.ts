@@ -55,7 +55,6 @@ export class InputHandlerEngine extends Engine {
       if (key_state === KeyState.Pressed) {
         this.emit_message(ShowUIMessage);
         if (!started) {
-          this.emit_message(StartMessage);
           this.emit_message(LoadStreamMessage);
         }
       }

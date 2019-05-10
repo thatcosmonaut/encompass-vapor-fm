@@ -44,6 +44,7 @@ import { TrackInfoDisplayEngine } from "./engines/ui/track_info_display";
 import { StreamManager } from "./helpers/stream_manager";
 import { ChannelRenderer } from "./renderers/channel";
 import { SceneRenderer } from "./renderers/scene";
+import { AsyncEngine } from "./engines/async";
 
 export class Page {
   private world: World;
@@ -70,6 +71,7 @@ export class Page {
     world_builder.add_engine(LogoDisplayEngine);
     world_builder.add_engine(StreamEngine);
     world_builder.add_engine(StartEngine);
+    world_builder.add_engine(AsyncEngine);
 
     world_builder.add_renderer(ChannelRenderer);
     world_builder.add_renderer(SceneRenderer);
