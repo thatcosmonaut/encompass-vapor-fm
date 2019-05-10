@@ -31,6 +31,8 @@ import { SceneComponent } from "./components/scene";
 import { ArtistInfoUIComponent } from "./components/ui/artist_info";
 import { LogoUIComponent } from "./components/ui/logo";
 import { SongInfoUIComponent } from "./components/ui/song_info";
+import { VHSPauseComponent } from "./components/vhs_pause";
+import { AsyncEngine } from "./engines/async";
 import { BadTVEffectEngine } from "./engines/bad_tv_effect";
 import { ChannelUpdateEngine } from "./engines/channel_update";
 import { CRTEffectEngine } from "./engines/crt_effect";
@@ -41,10 +43,10 @@ import { StreamEngine } from "./engines/stream";
 import { ChannelNumberDisplayEngine } from "./engines/ui/channel_number_display";
 import { LogoDisplayEngine } from "./engines/ui/logo_display";
 import { TrackInfoDisplayEngine } from "./engines/ui/track_info_display";
+import { VHSPauseEffectEngine } from "./engines/vhs_pause_effect";
 import { StreamManager } from "./helpers/stream_manager";
 import { ChannelRenderer } from "./renderers/channel";
 import { SceneRenderer } from "./renderers/scene";
-import { AsyncEngine } from "./engines/async";
 
 export class Page {
   private world: World;
@@ -72,6 +74,7 @@ export class Page {
     world_builder.add_engine(StreamEngine);
     world_builder.add_engine(StartEngine);
     world_builder.add_engine(AsyncEngine);
+    world_builder.add_engine(VHSPauseEffectEngine);
 
     world_builder.add_renderer(ChannelRenderer);
     world_builder.add_renderer(SceneRenderer);
@@ -232,6 +235,24 @@ export class Page {
     pipeline.bloomScale = 0.5;
 
     const postprocess_entity = world_builder.create_entity();
+
+    const vhs_pause_component = postprocess_entity.add_component(VHSPauseComponent);
+    vhs_pause_component.amount = 0;
+    vhs_pause_component.time = 0;
+    const vhs_pause_effect = new PostProcess(
+      "vhs",
+      "./assets/shaders/vhs_pause",
+      ["time", "amount"],
+      null,
+      1.0,
+      camera
+    );
+    vhs_pause_effect.onApply = effect => {
+      effect.setFloat("time", vhs_pause_component.time);
+      effect.setFloat("amount", vhs_pause_component.amount);
+    }
+    vhs_pause_component.effect = vhs_pause_effect;
+
     const crt_effect_component = postprocess_entity.add_component(
       CRTEffectComponent
     );
