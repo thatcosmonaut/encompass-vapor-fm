@@ -232,7 +232,7 @@ export class Page {
 
     const song_name = new TextBlock(
       "artistName",
-      "really really really really really long"
+      "songName"
     );
     song_name.fontFamily = "TelegramaRaw";
     song_name.fontSize = 50;

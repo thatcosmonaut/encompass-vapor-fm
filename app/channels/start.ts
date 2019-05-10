@@ -57,7 +57,7 @@ export class StartChannel extends Channel {
         line.color = "#6ba8e5";
         ui.addControl(line);
 
-        const spacebar_instructions = new TextBlock("spacebar", "Spacebar| Toggle Play");
+        const spacebar_instructions = new TextBlock("spacebar", "Spacebar or Touch to Begin");
         spacebar_instructions.fontFamily = "DolphinOceanWave";
         spacebar_instructions.fontSize = 32;
         spacebar_instructions.color = "white";
@@ -68,7 +68,7 @@ export class StartChannel extends Channel {
         spacebar_instructions.top = 50;
         ui.addControl(spacebar_instructions);
 
-        const right_arrow = new TextBlock("rightArrow", "Right Arrow / Change Channel");
+        const right_arrow = new TextBlock("rightArrow", "Arrows or Swipe to Change Channel");
         right_arrow.fontFamily = "DolphinOceanWave";
         right_arrow.fontSize = 32;
         right_arrow.color = "white";
