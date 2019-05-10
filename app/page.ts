@@ -13,7 +13,8 @@ import {
   StandardMaterial,
   Texture,
   UniversalCamera,
-  Vector3} from "babylonjs";
+  Vector3
+} from "babylonjs";
 import {
   AdvancedDynamicTexture,
   Control,
@@ -93,13 +94,29 @@ export class Page {
     world_builder.add_renderer(SceneRenderer);
 
     this.stream_manager = new StreamManager();
-    world_builder.create_entity().add_component(StreamManagerComponent).stream_manager = this.stream_manager;
+    world_builder
+      .create_entity()
+      .add_component(
+        StreamManagerComponent
+      ).stream_manager = this.stream_manager;
 
-    const start_channel = new StartChannel(new Scene(engine), this.stream_manager);
+    const start_channel = new StartChannel(
+      new Scene(engine),
+      this.stream_manager
+    );
     const bust_state = new BustState(new Scene(engine), this.stream_manager);
-    const cybergrid_state = new CybergridState(new Scene(engine), this.stream_manager);
-    const dark_bust_state = new DarkBustState(new Scene(engine), this.stream_manager);
-    const noise_channel = new NoiseChannel(new Scene(engine), this.stream_manager);
+    const cybergrid_state = new CybergridState(
+      new Scene(engine),
+      this.stream_manager
+    );
+    const dark_bust_state = new DarkBustState(
+      new Scene(engine),
+      this.stream_manager
+    );
+    const noise_channel = new NoiseChannel(
+      new Scene(engine),
+      this.stream_manager
+    );
 
     const channels = new Map<number, Channel>();
     channels.set(2, start_channel);
@@ -140,7 +157,9 @@ export class Page {
     const ui = AdvancedDynamicTexture.CreateFullscreenUI("UI", true, scene);
 
     const signal_message_entity = world_builder.create_entity();
-    const signal_message_component = signal_message_entity.add_component(SignalTextComponent);
+    const signal_message_component = signal_message_entity.add_component(
+      SignalTextComponent
+    );
     const signal_text = new TextBlock("signalMessage", "acquiring signal...");
     signal_text.textHorizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
     signal_text.textVerticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
@@ -156,7 +175,9 @@ export class Page {
     signal_message_component.text_block = signal_text;
 
     const channel_number_entity = world_builder.create_entity();
-    const channel_number_outline_component = channel_number_entity.add_component(ChannelNumberComponent);
+    const channel_number_outline_component = channel_number_entity.add_component(
+      ChannelNumberComponent
+    );
     const channel_number_outline_text = new TextBlock(
       "channelNumOutline",
       channels_component.current_index.toString()
@@ -175,7 +196,9 @@ export class Page {
     channel_number_outline_component.text_block = channel_number_outline_text;
     channel_number_outline_component.time = 0;
 
-    const channel_number_component = channel_number_entity.add_component(ChannelNumberComponent);
+    const channel_number_component = channel_number_entity.add_component(
+      ChannelNumberComponent
+    );
     const channel_number_text = new TextBlock(
       "channelNum",
       channels_component.current_index.toString()
@@ -183,7 +206,8 @@ export class Page {
     channel_number_text.fontFamily = "TelegramaRaw";
     channel_number_text.fontSize = 120;
     channel_number_text.color = "white";
-    channel_number_text.textHorizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT;
+    channel_number_text.textHorizontalAlignment =
+      Control.HORIZONTAL_ALIGNMENT_RIGHT;
     channel_number_text.textVerticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
     channel_number_text.top = 10;
     channel_number_text.left = -20;
@@ -212,7 +236,9 @@ export class Page {
     );
     icecast_timer_component.time_remaining = 0;
 
-    const artist_ui_component = text_ui_entity.add_component(ArtistInfoUIComponent);
+    const artist_ui_component = text_ui_entity.add_component(
+      ArtistInfoUIComponent
+    );
 
     const artist_name = new TextBlock("artistName", "kosumonotto");
     artist_name.fontFamily = "TelegramaRaw";
@@ -230,10 +256,7 @@ export class Page {
 
     const song_ui_component = text_ui_entity.add_component(SongInfoUIComponent);
 
-    const song_name = new TextBlock(
-      "artistName",
-      "songName"
-    );
+    const song_name = new TextBlock("artistName", "songName");
     song_name.fontFamily = "TelegramaRaw";
     song_name.fontSize = 50;
     song_name.color = "white";
@@ -271,7 +294,9 @@ export class Page {
 
     const postprocess_entity = world_builder.create_entity();
 
-    const vhs_pause_component = postprocess_entity.add_component(VHSPauseComponent);
+    const vhs_pause_component = postprocess_entity.add_component(
+      VHSPauseComponent
+    );
     vhs_pause_component.amount = 0;
     vhs_pause_component.time = 0;
     const vhs_pause_effect = new PostProcess(
@@ -285,7 +310,7 @@ export class Page {
     vhs_pause_effect.onApply = effect => {
       effect.setFloat("time", vhs_pause_component.time);
       effect.setFloat("amount", vhs_pause_component.amount);
-    }
+    };
     vhs_pause_component.effect = vhs_pause_effect;
 
     const bad_tv_component = postprocess_entity.add_component(
@@ -345,7 +370,7 @@ export class Page {
         });
         this.running = true;
       }
-    }
+    };
 
     document.addEventListener("visibilitychange", () => {
       if (document.hidden) {
@@ -354,7 +379,7 @@ export class Page {
       } else {
         run_engine();
       }
-    })
+    });
 
     window.addEventListener("resize", () => {
       engine.resize();

@@ -4,9 +4,9 @@ import { StartMessage } from "../messages/start_message";
 
 @Reads(StartMessage)
 export class StartEngine extends Engine {
-    public update() {
-        if (this.read_messages(StartMessage).size > 0) {
-            this.create_entity().add_component(StartedComponent);
-        }
+  public update() {
+    if (this.read_messages(StartMessage).size > 0) {
+      this.create_entity().add_component(StartedComponent);
     }
+  }
 }

@@ -10,25 +10,34 @@ import { ShowUIMessage } from "../../messages/show_ui";
 @Reads(ShowUIMessage, ChangeArtistTextMessage, ChangeSongTextMessage)
 @Mutates(ArtistInfoUIComponent, SongInfoUIComponent)
 export class TrackInfoDisplayEngine extends Engine {
-    public update(dt: number) {
-        for (const artist_info_ui_component of this.read_components(ArtistInfoUIComponent).iterable()) {
-            if (this.read_messages(ShowUIMessage).size > 0) {
-                artist_info_ui_component.text_block.isVisible = true;
-            }
+  public update(dt: number) {
+    for (const artist_info_ui_component of this.read_components(
+      ArtistInfoUIComponent
+    ).iterable()) {
+      if (this.read_messages(ShowUIMessage).size > 0) {
+        artist_info_ui_component.text_block.isVisible = true;
+      }
 
-            for (const change_artist_text_message of this.read_messages(ChangeArtistTextMessage).iterable()) {
-                artist_info_ui_component.text_block.text = change_artist_text_message.text;
-            }
-        }
-
-        for (const song_info_ui_component of this.read_components(SongInfoUIComponent).iterable()) {
-            if (this.read_messages(ShowUIMessage).size > 0) {
-                song_info_ui_component.text_block.isVisible = true;
-            }
-
-            for (const change_song_text_message of this.read_messages(ChangeSongTextMessage).iterable()) {
-                song_info_ui_component.text_block.text = change_song_text_message.text;
-            }
-        }
+      for (const change_artist_text_message of this.read_messages(
+        ChangeArtistTextMessage
+      ).iterable()) {
+        artist_info_ui_component.text_block.text =
+          change_artist_text_message.text;
+      }
     }
+
+    for (const song_info_ui_component of this.read_components(
+      SongInfoUIComponent
+    ).iterable()) {
+      if (this.read_messages(ShowUIMessage).size > 0) {
+        song_info_ui_component.text_block.isVisible = true;
+      }
+
+      for (const change_song_text_message of this.read_messages(
+        ChangeSongTextMessage
+      ).iterable()) {
+        song_info_ui_component.text_block.text = change_song_text_message.text;
+      }
+    }
+  }
 }

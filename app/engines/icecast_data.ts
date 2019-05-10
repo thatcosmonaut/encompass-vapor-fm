@@ -14,12 +14,16 @@ export class IcecastDataEngine extends Engine {
 
   public update(dt: number) {
     if (this.artist_text_to_update) {
-      this.emit_message(ChangeArtistTextMessage).text = this.artist_text_to_update.slice(0); // deep copy
+      this.emit_message(
+        ChangeArtistTextMessage
+      ).text = this.artist_text_to_update.slice(0); // deep copy
       this.artist_text_to_update = undefined;
     }
 
     if (this.song_text_to_update) {
-      this.emit_message(ChangeSongTextMessage).text = this.song_text_to_update.slice(0);
+      this.emit_message(
+        ChangeSongTextMessage
+      ).text = this.song_text_to_update.slice(0);
       this.song_text_to_update = undefined;
     }
 

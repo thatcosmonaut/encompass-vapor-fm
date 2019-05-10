@@ -7,19 +7,23 @@ import { TogglePauseMessage } from "../messages/pause";
 @Reads(ChangeAngularVelocityMessage, TogglePauseMessage)
 @Mutates(AngularVelocityComponent)
 export class ChangeAngularVelocityEngine extends ComponentModifier {
-    public component_message_type = ChangeAngularVelocityMessage;
+  public component_message_type = ChangeAngularVelocityMessage;
 
-    protected modify(component: AngularVelocityComponent, messages: GCOptimizedSet<ChangeAngularVelocityMessage>, dt: number) {
-        for (const message of messages.iterable()) {
-            if (message.x) {
-                component.x = message.x;
-            }
-            if (message.y) {
-                component.y = message.y;
-            }
-            if (message.z) {
-                component.z = message.y;
-            }
-        }
+  protected modify(
+    component: AngularVelocityComponent,
+    messages: GCOptimizedSet<ChangeAngularVelocityMessage>,
+    dt: number
+  ) {
+    for (const message of messages.iterable()) {
+      if (message.x) {
+        component.x = message.x;
+      }
+      if (message.y) {
+        component.y = message.y;
+      }
+      if (message.z) {
+        component.z = message.y;
+      }
     }
+  }
 }

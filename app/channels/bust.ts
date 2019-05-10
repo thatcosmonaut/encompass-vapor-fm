@@ -55,7 +55,9 @@ export class BustState extends Channel {
     scene_component.scene = scene;
 
     const stream_manager_entity = world_builder.create_entity();
-    const stream_manager_component = stream_manager_entity.add_component(StreamManagerComponent);
+    const stream_manager_component = stream_manager_entity.add_component(
+      StreamManagerComponent
+    );
     stream_manager_component.stream_manager = stream_manager;
 
     const obj_loader = new OBJFileLoader();
@@ -88,7 +90,9 @@ export class BustState extends Channel {
     const model_entity = world_builder.create_entity();
     const object_component = model_entity.add_component(MeshComponent);
     const bust_component = model_entity.add_component(BustComponent);
-    const shrink_to_size_component = model_entity.add_component(ShrinkToSizeComponent);
+    const shrink_to_size_component = model_entity.add_component(
+      ShrinkToSizeComponent
+    );
     shrink_to_size_component.rate = 0.02;
     shrink_to_size_component.size = 0.14;
     const angular_velocity = model_entity.add_component(

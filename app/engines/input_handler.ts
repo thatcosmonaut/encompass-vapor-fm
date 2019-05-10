@@ -20,7 +20,7 @@ enum KeyState {
 enum MouseAndTouchEvents {
   LeftClick = -9999,
   LeftSwipe = -10000,
-  RightSwipe = -10001,
+  RightSwipe = -10001
 }
 
 @Emits(
@@ -30,7 +30,7 @@ enum MouseAndTouchEvents {
   ShowUIMessage,
   LoadStreamMessage,
   DeactivateStreamMessage,
-  StartMessage,
+  StartMessage
 )
 export class InputHandlerEngine extends Engine {
   private key_states = new GCOptimizedMap<number, KeyState>();
@@ -54,13 +54,13 @@ export class InputHandlerEngine extends Engine {
       if (this.key_states.has(MouseAndTouchEvents.RightSwipe)) {
         this.key_states.set(MouseAndTouchEvents.RightSwipe, KeyState.Pressed);
       }
-    })
+    });
 
     document.onclick = e => {
       if (this.key_states.has(MouseAndTouchEvents.LeftClick)) {
         this.key_states.set(MouseAndTouchEvents.LeftClick, KeyState.Pressed);
       }
-    }
+    };
 
     document.onkeydown = e => {
       if (this.key_states.has(e.keyCode)) {
@@ -99,13 +99,19 @@ export class InputHandlerEngine extends Engine {
     }
 
     if (activated) {
-      if (this.key_pressed(37) || this.key_pressed(MouseAndTouchEvents.LeftSwipe)) {
+      if (
+        this.key_pressed(37) ||
+        this.key_pressed(MouseAndTouchEvents.LeftSwipe)
+      ) {
         this.emit_message(ShowChannelNumberMessage);
         const message = this.emit_message(ChangeChannelMessage);
         message.amount = -1;
       }
 
-      if (this.key_pressed(39) || this.key_pressed(MouseAndTouchEvents.RightSwipe)) {
+      if (
+        this.key_pressed(39) ||
+        this.key_pressed(MouseAndTouchEvents.RightSwipe)
+      ) {
         this.emit_message(ShowChannelNumberMessage);
         const message = this.emit_message(ChangeChannelMessage);
         message.amount = 1;

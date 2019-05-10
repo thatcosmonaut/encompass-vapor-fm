@@ -28,7 +28,9 @@ export class ChannelUpdateEngine extends Engine {
         }
       }
 
-      if (this.read_components(PauseComponent).size > 0) { return; }
+      if (this.read_components(PauseComponent).size > 0) {
+        return;
+      }
 
       for (const change_channel_message of this.read_messages(
         ChangeChannelMessage
@@ -39,12 +41,13 @@ export class ChannelUpdateEngine extends Engine {
           component.start_index + component.channels.size - 1
         ) {
           component.current_index = component.start_index;
-        }
-        else if (component.current_index < component.start_index) {
-          component.current_index = component.start_index + component.channels.size - 1;
+        } else if (component.current_index < component.start_index) {
+          component.current_index =
+            component.start_index + component.channels.size - 1;
         }
 
-        this.emit_message(ChangeChannelNumberMessage).channel_number = component.current_index;
+        this.emit_message(ChangeChannelNumberMessage).channel_number =
+          component.current_index;
 
         const message = this.emit_message(BadTVDistortionMessage);
         message.distortion = 1;
