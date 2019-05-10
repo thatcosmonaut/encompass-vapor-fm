@@ -33,6 +33,13 @@ export class InputHandlerEngine extends Engine {
     this.register_key(32); // spacebar
     this.register_key(37); // left arrow
     this.register_key(39); // right arrow
+    this.register_key(-9999); // left click
+
+    document.onclick = e => {
+      if (this.key_states.has(-9999)) {
+        this.key_states.set(-9999, KeyState.Pressed);
+      }
+    }
 
     document.onkeydown = e => {
       if (this.key_states.has(e.keyCode)) {
