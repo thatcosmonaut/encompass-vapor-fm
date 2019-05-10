@@ -13,7 +13,6 @@ export class GlowEngine extends Detector {
 
         if (this.read_messages(KickBeatMessage).size > 0) {
             if (Math.random() < 0.02) {
-                console.log("beat detected!!");
                 material_component.material.emissiveColor = new Color3(0, 0, 0.8);
             }
         } else {
