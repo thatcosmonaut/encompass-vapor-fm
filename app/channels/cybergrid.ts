@@ -1,5 +1,7 @@
 import {
+  Color3,
   Color4,
+  GlowLayer,
   HemisphericLight,
   MeshBuilder,
   PassPostProcess,
@@ -20,11 +22,14 @@ import { AngularVelocityEngine } from "../engines/angular_velocity";
 import { BeatDetectorEngine } from "../engines/beat_detector";
 import { BeatReactEngine } from "../engines/beat_react";
 import { ChangeAngularVelocityEngine } from "../engines/change_angular_velocity";
+import { GlowEngine } from "../engines/glow";
 import { ShrinkToSizeEngine } from "../engines/shrink_to_size";
 import { TransformObjectEngine } from "../engines/transform_object";
 import { StreamManager } from "../helpers/stream_manager";
 import { SceneRenderer } from "../renderers/scene";
 import { Channel } from "./channel";
+import { GlowComponent } from "../components/glow";
+import { MaterialComponent } from "../components/material";
 
 export class CybergridState extends Channel {
   private world: World;
@@ -39,6 +44,7 @@ export class CybergridState extends Channel {
     world_builder.add_engine(BeatDetectorEngine);
     world_builder.add_engine(BeatReactEngine);
     world_builder.add_engine(ShrinkToSizeEngine);
+    world_builder.add_engine(GlowEngine);
 
     world_builder.add_renderer(SceneRenderer);
 
@@ -67,7 +73,9 @@ export class CybergridState extends Channel {
       scene
     );
 
-    this.generate_grid_lines(-60, -60, 60, 60, 3);
+    const glow_layer = new GlowLayer("glow", scene);
+
+    this.generate_grid_lines(world_builder, -60, -60, 60, 60, 3);
 
     const pyramid = MeshBuilder.CreatePolyhedron("dodecahedron", {
       type: 3,
@@ -109,27 +117,44 @@ export class CybergridState extends Channel {
     this.world.draw();
   }
 
+  private generate_tube_material() {
+    const material = new StandardMaterial("tube", this.scene);
+    material.diffuseColor = new Color3(0, 0, 0);
+    material.emissiveColor = new Color3(0, 0, 0.2);
+    material.ambientColor = new Color3(0, 0, 0);
+    material.specularColor = new Color3(0, 0, 0);
+    return material;
+  }
+
   private generate_grid_lines(
+    world_builder: WorldBuilder,
     left_x: number,
     bottom_y: number,
     right_x: number,
     top_y: number,
     spacing: number
   ) {
+    const radius = 0.03;
+
     for (
       let y = bottom_y, end = top_y, step = spacing, asc = step > 0;
       asc ? y <= end : y >= end;
       y += step
     ) {
-      const line_geometry = MeshBuilder.CreateLines(
+      const line_geometry = MeshBuilder.CreateTube(
         "line " + left_x + " " + bottom_y + " " + right_x + " " + top_y,
         {
-          points: [new Vector3(left_x, 0, y), new Vector3(right_x, 0, y)],
-          colors: [new Color4(0, 0, 0.8, 0.8), new Color4(0, 0, 0.8, 0.8)]
+          path: [new Vector3(left_x, 0, y), new Vector3(right_x, 0, y)],
+          radius,
         }
       );
 
+      const material = this.generate_tube_material();
+      line_geometry.material = material;
       this.scene.addMesh(line_geometry);
+      const line_entity = world_builder.create_entity();
+      line_entity.add_component(GlowComponent);
+      line_entity.add_component(MaterialComponent).material = material;
     }
 
     for (
@@ -137,15 +162,20 @@ export class CybergridState extends Channel {
       asc1 ? x <= end1 : x >= end1;
       x += step1
     ) {
-      const line_geometry = MeshBuilder.CreateLines(
+      const line_geometry = MeshBuilder.CreateTube(
         "line " + left_x + " " + bottom_y + " " + right_x + " " + top_y,
         {
-          points: [new Vector3(x, 0, bottom_y), new Vector3(x, 0, top_y)],
-          colors: [new Color4(0, 0, 0.8, 0.8), new Color4(0, 0, 0.8, 0.8)]
+          path: [new Vector3(x, 0, bottom_y), new Vector3(x, 0, top_y)],
+          radius,
         }
       );
 
+      const material = this.generate_tube_material();
+      line_geometry.material = material;
       this.scene.addMesh(line_geometry);
+      const line_entity = world_builder.create_entity();
+      line_entity.add_component(GlowComponent);
+      line_entity.add_component(MaterialComponent).material = material;
     }
 
     for (
@@ -153,15 +183,21 @@ export class CybergridState extends Channel {
       asc2 ? y <= end2 : y >= end2;
       y += step2
     ) {
-      const line_geometry = MeshBuilder.CreateLines(
+      const line_geometry = MeshBuilder.CreateTube(
         "line " + left_x + " " + bottom_y + " " + right_x + " " + top_y,
         {
-          points: [new Vector3(left_x, 10, y), new Vector3(right_x, 10, y)],
-          colors: [new Color4(0, 0, 0.8, 0.8), new Color4(0, 0, 0.8, 0.8)]
+          path: [new Vector3(left_x, 10, y), new Vector3(right_x, 10, y)],
+          radius,
         }
       );
 
+      const material = this.generate_tube_material();
+
+      line_geometry.material = material;
       this.scene.addMesh(line_geometry);
+      const line_entity = world_builder.create_entity();
+      line_entity.add_component(GlowComponent);
+      line_entity.add_component(MaterialComponent).material = material;
     }
 
     for (
@@ -169,15 +205,21 @@ export class CybergridState extends Channel {
       asc3 ? x <= end3 : x >= end3;
       x += step3
     ) {
-      const line_geometry = MeshBuilder.CreateLines(
+      const line_geometry = MeshBuilder.CreateTube(
         "line " + left_x + " " + bottom_y + " " + right_x + " " + top_y,
         {
-          points: [new Vector3(x, 10, bottom_y), new Vector3(x, 10, top_y)],
-          colors: [new Color4(0, 0, 0.8, 0.8), new Color4(0, 0, 0.8, 0.8)]
+          path: [new Vector3(x, 10, bottom_y), new Vector3(x, 10, top_y)],
+          radius,
         }
       );
 
+      const material = this.generate_tube_material();
+
+      line_geometry.material = material;
       this.scene.addMesh(line_geometry);
+      const line_entity = world_builder.create_entity();
+      line_entity.add_component(GlowComponent);
+      line_entity.add_component(MaterialComponent).material = material;
     }
   }
 }

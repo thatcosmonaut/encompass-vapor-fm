@@ -37,7 +37,6 @@ export class BeatReactEngine extends Engine {
         }
         if (beat_react_component.reverse_y) {
           change_angular_velocity_message.y = angular_velocity.y * (Math.random() < 0.5 ? -1 : 1);
-          console.log(change_angular_velocity_message.y);
         }
         if (beat_react_component.reverse_z) {
           change_angular_velocity_message.z = angular_velocity.z * (Math.random() < 0.5 ? -1 : 1);
