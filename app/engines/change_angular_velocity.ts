@@ -1,7 +1,7 @@
 import { ComponentModifier, Mutates, Reads } from "encompass-ecs";
+import { GCOptimizedSet } from "tstl-gc-optimized-collections";
 import { AngularVelocityComponent } from "../components/angular_velocity";
 import { ChangeAngularVelocityMessage } from "../messages/component/change_angular_velocity";
-import { GCOptimizedSet } from "tstl-gc-optimized-collections";
 import { TogglePauseMessage } from "../messages/pause";
 
 @Reads(ChangeAngularVelocityMessage, TogglePauseMessage)

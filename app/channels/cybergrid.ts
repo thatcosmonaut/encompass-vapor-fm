@@ -11,13 +11,20 @@ import {
 } from "babylonjs";
 import { World, WorldBuilder } from "encompass-ecs";
 import { AngularVelocityComponent } from "../components/angular_velocity";
+import { StreamManagerComponent } from "../components/beat_detector";
+import { BeatReactComponent } from "../components/beat_react";
 import { MeshComponent } from "../components/mesh_component";
 import { SceneComponent } from "../components/scene";
+import { ShrinkToSizeComponent } from "../components/shrink_to_size";
 import { AngularVelocityEngine } from "../engines/angular_velocity";
+import { BeatDetectorEngine } from "../engines/beat_detector";
+import { BeatReactEngine } from "../engines/beat_react";
+import { ChangeAngularVelocityEngine } from "../engines/change_angular_velocity";
+import { ShrinkToSizeEngine } from "../engines/shrink_to_size";
 import { TransformObjectEngine } from "../engines/transform_object";
+import { StreamManager } from "../helpers/stream_manager";
 import { SceneRenderer } from "../renderers/scene";
 import { Channel } from "./channel";
-import { StreamManager } from "../helpers/stream_manager";
 
 export class CybergridState extends Channel {
   private world: World;
@@ -26,14 +33,21 @@ export class CybergridState extends Channel {
     super(scene, stream_manager);
     const world_builder = new WorldBuilder();
 
+    world_builder.add_engine(ChangeAngularVelocityEngine);
     world_builder.add_engine(AngularVelocityEngine);
     world_builder.add_engine(TransformObjectEngine);
+    world_builder.add_engine(BeatDetectorEngine);
+    world_builder.add_engine(BeatReactEngine);
+    world_builder.add_engine(ShrinkToSizeEngine);
 
     world_builder.add_renderer(SceneRenderer);
 
     const scene_entity = world_builder.create_entity();
     const scene_component = scene_entity.add_component(SceneComponent);
     scene_component.scene = scene;
+
+    const stream_manager_entity = world_builder.create_entity();
+    stream_manager_entity.add_component(StreamManagerComponent).stream_manager = stream_manager;
 
     const camera = new UniversalCamera(
       "sceneCamera",
@@ -42,21 +56,21 @@ export class CybergridState extends Channel {
     );
     camera.fov = 0.6;
 
-    const ambient_light = new HemisphericLight(
-      "ambientLight",
-      new Vector3(0, 0, -1),
-      scene
-    );
+    // const ambient_light = new HemisphericLight(
+    //   "ambientLight",
+    //   new Vector3(0, -1, -1),
+    //   scene
+    // );
     const point_light = new PointLight(
       "pointLight",
-      new Vector3(10, 40, -20),
+      new Vector3(0, 40, 0),
       scene
     );
 
     this.generate_grid_lines(-60, -60, 60, 60, 3);
 
-    const pyramid = MeshBuilder.CreatePolyhedron("pyramid", {
-      type: 2,
+    const pyramid = MeshBuilder.CreatePolyhedron("dodecahedron", {
+      type: 3,
       size: 3.5
     });
     pyramid.position.set(0, 5, 50);
@@ -64,15 +78,21 @@ export class CybergridState extends Channel {
     pyramid.material = pyramid_material;
     this.scene.addMesh(pyramid);
 
-    const pyramid_entity = world_builder.create_entity();
-    const mesh_component = pyramid_entity.add_component(MeshComponent);
+    const solid_entity = world_builder.create_entity();
+    const mesh_component = solid_entity.add_component(MeshComponent);
     mesh_component.mesh = pyramid;
-    const angular_velocity = pyramid_entity.add_component(
+    const angular_velocity = solid_entity.add_component(
       AngularVelocityComponent
     );
-    angular_velocity.x = 0;
-    angular_velocity.y = 0.2;
-    angular_velocity.z = 0;
+    angular_velocity.x = 1;
+    angular_velocity.y = 1;
+    angular_velocity.z = 1;
+
+    const beat_react_component = solid_entity.add_component(BeatReactComponent);
+    beat_react_component.grow_amount = 0;
+    beat_react_component.reverse_x = true;
+    beat_react_component.reverse_y = true;
+    beat_react_component.reverse_z = true;
 
     scene.clearColor = new Color4(0, 0, 0, 1);
 

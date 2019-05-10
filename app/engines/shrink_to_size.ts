@@ -1,6 +1,6 @@
-import { Engine, Emits } from "encompass-ecs";
-import { ShrinkToSizeComponent } from "../components/shrink_to_size";
+import { Emits, Engine } from "encompass-ecs";
 import { MeshComponent } from "../components/mesh_component";
+import { ShrinkToSizeComponent } from "../components/shrink_to_size";
 import { GrowObjectMessage } from "../messages/component/grow_object";
 
 @Emits(GrowObjectMessage)

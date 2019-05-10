@@ -1,4 +1,4 @@
-import { Engine, Mutates, Emits } from "encompass-ecs";
+import { Emits, Engine, Mutates } from "encompass-ecs";
 import { StreamManagerComponent } from "../components/beat_detector";
 import { KickBeatMessage } from "../messages/kick_beat";
 import { SnareBeatMessage } from "../messages/snare_beat";

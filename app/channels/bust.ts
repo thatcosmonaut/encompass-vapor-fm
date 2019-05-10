@@ -16,7 +16,7 @@ import { OBJFileLoader } from "babylonjs-loaders";
 import { World, WorldBuilder } from "encompass-ecs";
 import { AngularVelocityComponent } from "../components/angular_velocity";
 import { StreamManagerComponent } from "../components/beat_detector";
-import { BustComponent } from "../components/bust";
+import { BeatReactComponent } from "../components/beat_react";
 import { GrowthSpeedComponent } from "../components/growth_speed";
 import { MeshComponent } from "../components/mesh_component";
 import { SceneComponent } from "../components/scene";
@@ -24,7 +24,7 @@ import { ShrinkToSizeComponent } from "../components/shrink_to_size";
 import { WrapScaleComponent } from "../components/wrap_scale";
 import { AngularVelocityEngine } from "../engines/angular_velocity";
 import { BeatDetectorEngine } from "../engines/beat_detector";
-import { BustBeatReactEngine } from "../engines/bust_beat_react";
+import { BeatReactEngine } from "../engines/beat_react";
 import { ChangeAngularVelocityEngine } from "../engines/change_angular_velocity";
 import { GrowthDetector } from "../engines/growth";
 import { ShrinkToSizeEngine } from "../engines/shrink_to_size";
@@ -44,7 +44,7 @@ export class BustState extends Channel {
     world_builder.add_engine(GrowthDetector);
     world_builder.add_engine(TransformObjectEngine);
     world_builder.add_engine(BeatDetectorEngine);
-    world_builder.add_engine(BustBeatReactEngine);
+    world_builder.add_engine(BeatReactEngine);
     world_builder.add_engine(ShrinkToSizeEngine);
     world_builder.add_engine(ChangeAngularVelocityEngine);
 
@@ -89,7 +89,9 @@ export class BustState extends Channel {
 
     const model_entity = world_builder.create_entity();
     const object_component = model_entity.add_component(MeshComponent);
-    const bust_component = model_entity.add_component(BustComponent);
+    const beat_react_component = model_entity.add_component(BeatReactComponent);
+    beat_react_component.grow_amount = 0.002;
+    beat_react_component.reverse_y = true;
     const shrink_to_size_component = model_entity.add_component(
       ShrinkToSizeComponent
     );
