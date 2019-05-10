@@ -257,24 +257,6 @@ export class Page {
     }
     vhs_pause_component.effect = vhs_pause_effect;
 
-    const crt_effect_component = postprocess_entity.add_component(
-      CRTEffectComponent
-    );
-    crt_effect_component.time = 0;
-    const crt_effect = new PostProcess(
-      "crt",
-      "./assets/shaders/crt_shader",
-      ["screenSize", "time"],
-      null,
-      1.0,
-      camera
-    );
-    crt_effect.onApply = effect => {
-      effect.setFloat2("screenSize", window.innerWidth, window.innerHeight);
-      effect.setFloat("time", crt_effect_component.time);
-    };
-    crt_effect_component.effect = crt_effect;
-
     const bad_tv_component = postprocess_entity.add_component(
       BadTVEffectComponent
     );
@@ -300,6 +282,24 @@ export class Page {
       effect.setFloat("rollSpeed", bad_tv_component.rollSpeed);
     };
     bad_tv_component.effect = bad_tv;
+
+    const crt_effect_component = postprocess_entity.add_component(
+      CRTEffectComponent
+    );
+    crt_effect_component.time = 0;
+    const crt_effect = new PostProcess(
+      "crt",
+      "./assets/shaders/crt_shader",
+      ["screenSize", "time"],
+      null,
+      1.0,
+      camera
+    );
+    crt_effect.onApply = effect => {
+      effect.setFloat2("screenSize", window.innerWidth, window.innerHeight);
+      effect.setFloat("time", crt_effect_component.time);
+    };
+    crt_effect_component.effect = crt_effect;
 
     this.world = world_builder.build();
 
