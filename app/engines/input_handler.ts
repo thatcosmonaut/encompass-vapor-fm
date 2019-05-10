@@ -81,7 +81,6 @@ export class InputHandlerEngine extends Engine {
 
     for (const [key_code, key_state] of this.key_states.iterable()) {
       if (key_state === KeyState.Pressed) {
-        this.emit_message(ShowUIMessage);
         if (!started) {
           this.emit_message(LoadStreamMessage);
         }

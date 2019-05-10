@@ -1,9 +1,17 @@
 import {
+  Color3,
   Color4,
   DefaultRenderingPipeline,
   Engine,
+  HemisphericLight,
+  MeshBuilder,
+  ParticleHelper,
+  ParticleSystem,
+  PointLight,
   PostProcess,
   Scene,
+  StandardMaterial,
+  Texture,
   UniversalCamera,
   Vector3} from "babylonjs";
 import {
@@ -17,6 +25,7 @@ import { BustState } from "./channels/bust";
 import { Channel } from "./channels/channel";
 import { CybergridState } from "./channels/cybergrid";
 import { DarkBustState } from "./channels/dark_bust";
+import { NoiseChannel } from "./channels/noise";
 import { StartChannel } from "./channels/start";
 import { BadTVEffectComponent } from "./components/bad_tv_effect";
 import { StreamManagerComponent } from "./components/beat_detector";
@@ -27,8 +36,10 @@ import { IcecastTimerComponent } from "./components/icecast_timer";
 import { SceneComponent } from "./components/scene";
 import { ArtistInfoUIComponent } from "./components/ui/artist_info";
 import { LogoUIComponent } from "./components/ui/logo";
+import { SignalTextComponent } from "./components/ui/signal_message";
 import { SongInfoUIComponent } from "./components/ui/song_info";
 import { VHSPauseComponent } from "./components/vhs_pause";
+import { AngularVelocityEngine } from "./engines/angular_velocity";
 import { AsyncEngine } from "./engines/async";
 import { BadTVEffectEngine } from "./engines/bad_tv_effect";
 import { ChannelUpdateEngine } from "./engines/channel_update";
@@ -37,14 +48,15 @@ import { IcecastDataEngine } from "./engines/icecast_data";
 import { InputHandlerEngine } from "./engines/input_handler";
 import { StartEngine } from "./engines/start";
 import { StreamEngine } from "./engines/stream";
+import { TransformObjectEngine } from "./engines/transform_object";
 import { ChannelNumberDisplayEngine } from "./engines/ui/channel_number_display";
 import { LogoDisplayEngine } from "./engines/ui/logo_display";
+import { SignalTextEngine } from "./engines/ui/signal_text";
 import { TrackInfoDisplayEngine } from "./engines/ui/track_info_display";
 import { VHSPauseEffectEngine } from "./engines/vhs_pause_effect";
 import { StreamManager } from "./helpers/stream_manager";
 import { ChannelRenderer } from "./renderers/channel";
 import { SceneRenderer } from "./renderers/scene";
-import { NoiseChannel } from "./channels/noise";
 
 export class Page {
   private world: World;
@@ -57,10 +69,12 @@ export class Page {
 
     const scene = new Scene(engine);
     scene.clearColor = new Color4(0, 0, 0, 0);
-    const camera = new UniversalCamera("camera", new Vector3(), scene);
+    const camera = new UniversalCamera("camera", new Vector3(0, 0, -10), scene);
 
     const world_builder = new WorldBuilder();
 
+    world_builder.add_engine(TransformObjectEngine);
+    world_builder.add_engine(AngularVelocityEngine);
     world_builder.add_engine(IcecastDataEngine);
     world_builder.add_engine(InputHandlerEngine).initialize();
     world_builder.add_engine(ChannelUpdateEngine);
@@ -73,6 +87,7 @@ export class Page {
     world_builder.add_engine(StartEngine);
     world_builder.add_engine(AsyncEngine);
     world_builder.add_engine(VHSPauseEffectEngine);
+    world_builder.add_engine(SignalTextEngine);
 
     world_builder.add_renderer(ChannelRenderer);
     world_builder.add_renderer(SceneRenderer);
@@ -123,6 +138,22 @@ export class Page {
     };
 
     const ui = AdvancedDynamicTexture.CreateFullscreenUI("UI", true, scene);
+
+    const signal_message_entity = world_builder.create_entity();
+    const signal_message_component = signal_message_entity.add_component(SignalTextComponent);
+    const signal_text = new TextBlock("signalMessage", "acquiring signal...");
+    signal_text.textHorizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
+    signal_text.textVerticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
+    signal_text.left = 20;
+    signal_text.top = 20;
+    signal_text.fontFamily = "TelegramaRaw";
+    signal_text.fontSize = 50;
+    signal_text.color = "white";
+    signal_text.outlineColor = "black";
+    signal_text.outlineWidth = 10;
+    signal_text.isVisible = false;
+    ui.addControl(signal_text);
+    signal_message_component.text_block = signal_text;
 
     const channel_number_entity = world_builder.create_entity();
     const channel_number_outline_component = channel_number_entity.add_component(ChannelNumberComponent);

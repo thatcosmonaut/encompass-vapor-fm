@@ -1,14 +1,17 @@
-import { Engine, Reads } from "encompass-ecs";
+import { Emits, Engine, Reads } from "encompass-ecs";
 import { ActivatedStreamComponent } from "../components/activated_stream";
 import { StreamManagerComponent } from "../components/beat_detector";
 import { ActivateStreamMessage } from "../messages/activate_stream";
 import { DeactivateStreamMessage } from "../messages/deactivate_stream";
 import { LoadStreamMessage } from "../messages/load_stream";
+import { ShowUIMessage } from "../messages/show_ui";
 
+@Emits(ShowUIMessage)
 @Reads(ActivateStreamMessage, LoadStreamMessage, DeactivateStreamMessage)
 export class StreamEngine extends Engine {
     public update() {
         if (this.read_messages(ActivateStreamMessage).size > 0) {
+            this.emit_message(ShowUIMessage);
             this.create_entity().add_component(ActivatedStreamComponent);
         }
 
