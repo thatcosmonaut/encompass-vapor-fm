@@ -13,7 +13,6 @@ export class TrackInfoDisplayEngine extends Engine {
     public update(dt: number) {
         for (const artist_info_ui_component of this.read_components(ArtistInfoUIComponent).iterable()) {
             if (this.read_messages(ShowUIMessage).size > 0) {
-                console.log("show ui");
                 artist_info_ui_component.text_block.isVisible = true;
             }
 

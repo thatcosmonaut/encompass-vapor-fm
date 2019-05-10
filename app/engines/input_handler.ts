@@ -17,6 +17,12 @@ enum KeyState {
   Released
 }
 
+enum MouseAndTouchEvents {
+  LeftClick = -9999,
+  LeftSwipe = -10000,
+  RightSwipe = -10001,
+}
+
 @Emits(
   ChangeChannelMessage,
   TogglePauseMessage,
@@ -33,11 +39,26 @@ export class InputHandlerEngine extends Engine {
     this.register_key(32); // spacebar
     this.register_key(37); // left arrow
     this.register_key(39); // right arrow
-    this.register_key(-9999); // left click
+    this.register_key(MouseAndTouchEvents.LeftClick);
+    this.register_key(MouseAndTouchEvents.LeftSwipe);
+    this.register_key(MouseAndTouchEvents.RightSwipe);
+
+    const element = document.getElementById("renderCanvas")!;
+    element.addEventListener("swipeleft", e => {
+      if (this.key_states.has(MouseAndTouchEvents.LeftSwipe)) {
+        this.key_states.set(MouseAndTouchEvents.LeftSwipe, KeyState.Pressed);
+      }
+    });
+
+    element.addEventListener("swiperight", e => {
+      if (this.key_states.has(MouseAndTouchEvents.RightSwipe)) {
+        this.key_states.set(MouseAndTouchEvents.RightSwipe, KeyState.Pressed);
+      }
+    })
 
     document.onclick = e => {
-      if (this.key_states.has(-9999)) {
-        this.key_states.set(-9999, KeyState.Pressed);
+      if (this.key_states.has(MouseAndTouchEvents.LeftClick)) {
+        this.key_states.set(MouseAndTouchEvents.LeftClick, KeyState.Pressed);
       }
     }
 
@@ -79,13 +100,13 @@ export class InputHandlerEngine extends Engine {
     }
 
     if (activated) {
-      if (this.key_pressed(37)) {
+      if (this.key_pressed(37) || this.key_pressed(MouseAndTouchEvents.LeftSwipe)) {
         this.emit_message(ShowChannelNumberMessage);
         const message = this.emit_message(ChangeChannelMessage);
         message.amount = -1;
       }
 
-      if (this.key_pressed(39)) {
+      if (this.key_pressed(39) || this.key_pressed(MouseAndTouchEvents.RightSwipe)) {
         this.emit_message(ShowChannelNumberMessage);
         const message = this.emit_message(ChangeChannelMessage);
         message.amount = 1;
