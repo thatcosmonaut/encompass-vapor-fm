@@ -15,23 +15,23 @@ import {
 import { OBJFileLoader } from "babylonjs-loaders";
 import { World, WorldBuilder } from "encompass-ecs";
 import { AngularVelocityComponent } from "../components/angular_velocity";
+import { StreamManagerComponent } from "../components/beat_detector";
+import { BustComponent } from "../components/bust";
 import { GrowthSpeedComponent } from "../components/growth_speed";
 import { MeshComponent } from "../components/mesh_component";
 import { SceneComponent } from "../components/scene";
+import { ShrinkToSizeComponent } from "../components/shrink_to_size";
 import { WrapScaleComponent } from "../components/wrap_scale";
 import { AngularVelocityEngine } from "../engines/angular_velocity";
-import { GrowthDetector } from "../engines/growth";
-import { TransformObjectEngine } from "../engines/transform_object";
-import { SceneRenderer } from "../renderers/scene";
-import { Channel } from "./channel";
-import { StreamManager } from "../helpers/stream_manager";
-import { StreamManagerComponent } from "../components/beat_detector";
 import { BeatDetectorEngine } from "../engines/beat_detector";
 import { BustBeatReactEngine } from "../engines/bust_beat_react";
-import { BustComponent } from "../components/bust";
-import { ShrinkToSizeComponent } from "../components/shrink_to_size";
-import { ShrinkToSizeEngine } from "../engines/shrink_to_size";
 import { ChangeAngularVelocityEngine } from "../engines/change_angular_velocity";
+import { GrowthDetector } from "../engines/growth";
+import { ShrinkToSizeEngine } from "../engines/shrink_to_size";
+import { TransformObjectEngine } from "../engines/transform_object";
+import { StreamManager } from "../helpers/stream_manager";
+import { SceneRenderer } from "../renderers/scene";
+import { Channel } from "./channel";
 
 export class BustState extends Channel {
   private world: World;

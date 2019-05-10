@@ -1,14 +1,11 @@
 import {
-  BlurPostProcess,
   Color4,
   DefaultRenderingPipeline,
   Engine,
   PostProcess,
   Scene,
   UniversalCamera,
-  Vector2,
-  Vector3
-} from "babylonjs";
+  Vector3} from "babylonjs";
 import {
   AdvancedDynamicTexture,
   Control,
@@ -47,6 +44,7 @@ import { VHSPauseEffectEngine } from "./engines/vhs_pause_effect";
 import { StreamManager } from "./helpers/stream_manager";
 import { ChannelRenderer } from "./renderers/channel";
 import { SceneRenderer } from "./renderers/scene";
+import { NoiseChannel } from "./channels/noise";
 
 export class Page {
   private world: World;
@@ -86,12 +84,18 @@ export class Page {
     const bust_state = new BustState(new Scene(engine), this.stream_manager);
     const cybergrid_state = new CybergridState(new Scene(engine), this.stream_manager);
     const dark_bust_state = new DarkBustState(new Scene(engine), this.stream_manager);
+    const noise_channel = new NoiseChannel(new Scene(engine), this.stream_manager);
 
     const channels = new Map<number, Channel>();
     channels.set(2, start_channel);
     channels.set(3, bust_state);
-    channels.set(4, cybergrid_state);
-    channels.set(5, dark_bust_state);
+    channels.set(4, noise_channel);
+    channels.set(5, cybergrid_state);
+    channels.set(6, noise_channel);
+    channels.set(7, noise_channel);
+    channels.set(8, dark_bust_state);
+    channels.set(9, noise_channel);
+    channels.set(10, noise_channel);
 
     const channels_entity = world_builder.create_entity();
     const channels_component = channels_entity.add_component(ChannelsComponent);
@@ -281,7 +285,7 @@ export class Page {
     bad_tv_component.rollSpeed = 0;
     const bad_tv = new PostProcess(
       "badTV",
-      "./assets/shaders/badTVShader",
+      "./assets/shaders/bad_tv",
       ["time", "distortion", "distortion2", "speed", "rollSpeed"],
       null,
       1.0,
@@ -311,12 +315,6 @@ export class Page {
         this.running = true;
       }
     }
-
-    // document.addEventListener("click", () => {
-    //   if (!this.stream_manager.loading && !this.stream_manager.loaded) {
-    //     this.stream_manager.load_and_play_audio();
-    //   }
-    // })
 
     document.addEventListener("visibilitychange", () => {
       if (document.hidden) {

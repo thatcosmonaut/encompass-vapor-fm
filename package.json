@@ -12,8 +12,8 @@
     "copyassets": "shx cp -r ./game/assets ./build/game/assets",
     "copyencompass": "shx mkdir ./build/encompass-ecs && shx mv ./build/node_modules/encompass-ecs/encompass-ecs/init.lua ./build/encompass-ecs/init.lua && shx cp ./node_modules/encompass-ecs/encompass-ecs.lua ./build",
     "copytslibs": "npm run copyencompass && npm run copytstlgc && npm run copyjprof",
-    "build": "webpack",
-    "start:dev": "webpack-dev-server"
+    "build": "webpack --config webpack/prod.config.js",
+    "start:dev": "webpack-dev-server --config webpack/dev.config.js"
   },
   "author": "ehemsley",
   "license": "UNLICENSED",

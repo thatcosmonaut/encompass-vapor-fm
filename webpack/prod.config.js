@@ -1,8 +1,7 @@
 const path = require("path");
 
 module.exports = {
-    mode: "development",
-    devtool: "inline-source-map",
+    mode: "production",
     entry: "./index.ts",
     output: {
       filename: "bundle.js"
@@ -22,10 +21,5 @@ module.exports = {
             }
         }
       ]
-    },
-    devServer: {
-      contentBase: path.join(__dirname, 'dist'),
-      compress: false,
-      port: 8080
     }
   };

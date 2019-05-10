@@ -1,12 +1,12 @@
-import { Channel } from "./channel";
+import { BaseTexture, Color4, FxaaPostProcess, MeshBuilder, PassPostProcess, PostProcess, Scene, Texture, UniversalCamera, Vector3 } from "babylonjs";
+import { AdvancedDynamicTexture, Control, Image, Line, TextBlock } from "babylonjs-gui";
 import { World, WorldBuilder } from "encompass-ecs";
-import { Scene, PassPostProcess, UniversalCamera, Vector3, Color4, MeshBuilder, PostProcess, BaseTexture, Texture, FxaaPostProcess } from "babylonjs";
-import { StreamManager } from "../helpers/stream_manager";
-import { SceneComponent } from "../components/scene";
-import { SceneRenderer } from "../renderers/scene";
-import { AdvancedDynamicTexture, Image, Control, Line, TextBlock } from "babylonjs-gui";
 import { RippleEffectComponent } from "../components/ripple_effect";
+import { SceneComponent } from "../components/scene";
 import { RippleEffectEngine } from "../engines/ripple_effect";
+import { StreamManager } from "../helpers/stream_manager";
+import { SceneRenderer } from "../renderers/scene";
+import { Channel } from "./channel";
 
 export class StartChannel extends Channel {
     private world: World;
@@ -92,7 +92,7 @@ export class StartChannel extends Channel {
         ui.addControl(text);
         */
 
-        //new FxaaPostProcess("fxaa", 1.0, camera);
+        // new FxaaPostProcess("fxaa", 1.0, camera);
 
         const postprocess_entity = world_builder.create_entity();
         const ripple_component = postprocess_entity.add_component(RippleEffectComponent);
