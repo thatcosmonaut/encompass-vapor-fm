@@ -13,12 +13,12 @@ export class ChannelUpdateEngine extends Engine {
   public update(dt: number) {
     for (const component of this.read_components_mutable(
       ChannelsComponent
-    ).iterable()) {
+    ).values()) {
       if (this.read_messages(TogglePauseMessage).size > 0) {
         const pause_components = this.read_components(PauseComponent);
 
         if (pause_components.size > 0) {
-          for (const pause_component of pause_components.iterable()) {
+          for (const pause_component of pause_components.values()) {
             this.get_entity(pause_component.entity_id)!.destroy();
           }
         } else {
@@ -34,7 +34,7 @@ export class ChannelUpdateEngine extends Engine {
 
       for (const change_channel_message of this.read_messages(
         ChangeChannelMessage
-      ).iterable()) {
+      ).values()) {
         component.current_index += change_channel_message.amount;
         if (
           component.current_index >

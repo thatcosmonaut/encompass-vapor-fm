@@ -12,10 +12,10 @@ export class BeatReactEngine extends Engine {
   public update() {
     for (const kick_beat_message of this.read_messages(
       KickBeatMessage
-    ).iterable()) {
+    ).values()) {
       for (const beat_react_component of this.read_components(
         BeatReactComponent
-      ).iterable()) {
+      ).values()) {
         const entity = this.get_entity(beat_react_component.entity_id)!;
 
         const grow_message = this.emit_component_message(

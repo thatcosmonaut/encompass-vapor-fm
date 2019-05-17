@@ -15,7 +15,7 @@ export class AsyncEngine extends Engine {
     if (this.waiting_for_stream_load) {
       for (const stream_manager_component of this.read_components(
         StreamManagerComponent
-      ).iterable()) {
+      ).values()) {
         if (stream_manager_component.stream_manager.loaded) {
           const started = this.read_components(StartedComponent).size !== 0;
           if (!started) {

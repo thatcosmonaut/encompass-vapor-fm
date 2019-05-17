@@ -13,14 +13,14 @@ export class TrackInfoDisplayEngine extends Engine {
   public update(dt: number) {
     for (const artist_info_ui_component of this.read_components(
       ArtistInfoUIComponent
-    ).iterable()) {
+    ).values()) {
       if (this.read_messages(ShowUIMessage).size > 0) {
         artist_info_ui_component.text_block.isVisible = true;
       }
 
       for (const change_artist_text_message of this.read_messages(
         ChangeArtistTextMessage
-      ).iterable()) {
+      ).values()) {
         artist_info_ui_component.text_block.text =
           change_artist_text_message.text;
       }
@@ -28,14 +28,14 @@ export class TrackInfoDisplayEngine extends Engine {
 
     for (const song_info_ui_component of this.read_components(
       SongInfoUIComponent
-    ).iterable()) {
+    ).values()) {
       if (this.read_messages(ShowUIMessage).size > 0) {
         song_info_ui_component.text_block.isVisible = true;
       }
 
       for (const change_song_text_message of this.read_messages(
         ChangeSongTextMessage
-      ).iterable()) {
+      ).values()) {
         song_info_ui_component.text_block.text = change_song_text_message.text;
       }
     }

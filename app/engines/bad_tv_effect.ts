@@ -8,11 +8,11 @@ export class BadTVEffectEngine extends Engine {
   public update(dt: number) {
     for (const component of this.read_components_mutable(
       BadTVEffectComponent
-    ).iterable()) {
+    ).values()) {
       component.time += dt;
       for (const message of this.read_messages(
         BadTVDistortionMessage
-      ).iterable()) {
+      ).values()) {
         component.distortion = message.distortion;
         component.distortion2 = message.distortion2;
         component.rollSpeed = message.rollSpeed;

@@ -8,7 +8,7 @@ export class LogoDisplayEngine extends Engine {
   public update(dt: number) {
     for (const logo_ui_component of this.read_components_mutable(
       LogoUIComponent
-    ).iterable()) {
+    ).values()) {
       if (this.read_messages(ShowUIMessage).size > 0) {
         logo_ui_component.image.isVisible = true;
       }

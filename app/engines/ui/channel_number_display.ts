@@ -9,7 +9,7 @@ export class ChannelNumberDisplayEngine extends Engine {
   public update(dt: number) {
     for (const channel_number_component of this.read_components_mutable(
       ChannelNumberComponent
-    ).iterable()) {
+    ).values()) {
       if (channel_number_component.text_block.isVisible) {
         channel_number_component.time -= dt;
 
@@ -20,14 +20,14 @@ export class ChannelNumberDisplayEngine extends Engine {
 
       for (const show_channel_number_message of this.read_messages(
         ShowChannelNumberMessage
-      ).iterable()) {
+      ).values()) {
         channel_number_component.text_block.isVisible = true;
         channel_number_component.time = 5;
       }
 
       for (const change_channel_number_message of this.read_messages(
         ChangeChannelNumberMessage
-      ).iterable()) {
+      ).values()) {
         channel_number_component.text_block.text = change_channel_number_message.channel_number.toString();
       }
     }

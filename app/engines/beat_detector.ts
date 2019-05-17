@@ -9,7 +9,7 @@ export class BeatDetectorEngine extends Engine {
   public update() {
     for (const stream_manager_component of this.read_components(
       StreamManagerComponent
-    ).iterable()) {
+    ).values()) {
       stream_manager_component.stream_manager.update();
 
       if (stream_manager_component.stream_manager.beat_detector) {

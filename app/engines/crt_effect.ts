@@ -6,7 +6,7 @@ export class CRTEffectEngine extends Engine {
   public update(dt: number) {
     for (const component of this.read_components_mutable(
       CRTEffectComponent
-    ).iterable()) {
+    ).values()) {
       component.time += dt;
     }
   }

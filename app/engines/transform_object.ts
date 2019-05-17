@@ -12,7 +12,7 @@ export class TransformObjectEngine extends Engine {
     const grow_object_messages = this.read_messages(GrowObjectMessage);
     const rotate_object_messages = this.read_messages(RotateObjectMessage);
 
-    for (const grow_object_message of grow_object_messages.iterable()) {
+    for (const grow_object_message of grow_object_messages.values()) {
       const component = grow_object_message.component;
       if (component.mesh !== undefined) {
         let new_x_scale = grow_object_message.component.mesh.scaling.x;
@@ -43,7 +43,7 @@ export class TransformObjectEngine extends Engine {
       }
     }
 
-    for (const rotate_object_message of rotate_object_messages.iterable()) {
+    for (const rotate_object_message of rotate_object_messages.values()) {
       const component = rotate_object_message.component;
       if (component.mesh !== undefined) {
         rotate_object_message.component.mesh.rotate(

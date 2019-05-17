@@ -79,7 +79,7 @@ export class InputHandlerEngine extends Engine {
     const started = this.read_components(StartedComponent).size !== 0;
     const activated = this.read_components(ActivatedStreamComponent).size !== 0;
 
-    for (const [key_code, key_state] of this.key_states.iterable()) {
+    for (const [key_code, key_state] of this.key_states.entries()) {
       if (key_state === KeyState.Pressed) {
         if (!started) {
           this.emit_message(LoadStreamMessage);
@@ -118,7 +118,7 @@ export class InputHandlerEngine extends Engine {
       }
     }
 
-    for (const [key, key_state] of this.key_states.iterable()) {
+    for (const [key, key_state] of this.key_states.entries()) {
       switch (key_state) {
         case KeyState.Pressed:
           this.key_states.set(key, KeyState.Down);

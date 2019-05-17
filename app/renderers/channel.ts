@@ -7,7 +7,7 @@ export class ChannelRenderer extends GeneralRenderer {
   public render() {
     for (const channel_component of this.read_components(
       ChannelsComponent
-    ).iterable()) {
+    ).values()) {
       channel_component.channels.get(channel_component.current_index)!.draw();
     }
   }

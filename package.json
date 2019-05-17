@@ -34,6 +34,6 @@
     "babylonjs": "^4.0.3",
     "babylonjs-gui": "^4.0.3",
     "babylonjs-loaders": "^4.0.3",
-    "encompass-ecs": "^0.21.0"
+    "encompass-ecs": "^0.22.2"
   }
 }

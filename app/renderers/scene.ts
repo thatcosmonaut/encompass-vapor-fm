@@ -7,7 +7,7 @@ export class SceneRenderer extends GeneralRenderer {
   public render() {
     for (const scene_component of this.read_components(
       SceneComponent
-    ).iterable()) {
+    ).values()) {
       scene_component.scene.render();
     }
   }

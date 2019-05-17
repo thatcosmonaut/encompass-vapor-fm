@@ -29,7 +29,7 @@ export class IcecastDataEngine extends Engine {
 
     for (const icecast_timer_component of this.read_components_mutable(
       IcecastTimerComponent
-    ).iterable()) {
+    ).values()) {
       icecast_timer_component.time_remaining -= dt;
 
       if (icecast_timer_component.time_remaining < 0) {

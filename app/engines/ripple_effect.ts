@@ -6,7 +6,7 @@ export class RippleEffectEngine extends Engine {
   public update(dt: number) {
     for (const component of this.read_components_mutable(
       RippleEffectComponent
-    ).iterable()) {
+    ).values()) {
       component.time += dt;
     }
   }

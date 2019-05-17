@@ -8,7 +8,7 @@ export class ShrinkToSizeEngine extends Engine {
   public update(dt: number) {
     for (const shrink_to_size_component of this.read_components(
       ShrinkToSizeComponent
-    ).iterable()) {
+    ).values()) {
       const mesh_component = this.get_entity(
         shrink_to_size_component.entity_id
       )!.get_component(MeshComponent);

@@ -10,7 +10,7 @@ export class SignalTextEngine extends Engine {
     if (this.read_messages(LoadStreamMessage).size > 0) {
       for (const signal_text_component of this.read_components_mutable(
         SignalTextComponent
-      ).iterable()) {
+      ).values()) {
         signal_text_component.text_block.isVisible = true;
       }
     }
@@ -18,7 +18,7 @@ export class SignalTextEngine extends Engine {
     if (this.read_messages(ActivateStreamMessage).size > 0) {
       for (const signal_text_component of this.read_components_mutable(
         SignalTextComponent
-      ).iterable()) {
+      ).values()) {
         signal_text_component.text_block.isVisible = false;
       }
     }

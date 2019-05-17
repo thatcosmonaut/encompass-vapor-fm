@@ -14,7 +14,7 @@ export class ChangeAngularVelocityEngine extends ComponentModifier {
     messages: GCOptimizedSet<ChangeAngularVelocityMessage>,
     dt: number
   ) {
-    for (const message of messages.iterable()) {
+    for (const message of messages.entries()) {
       if (message.x) {
         component.x = message.x;
       }

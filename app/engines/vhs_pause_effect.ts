@@ -14,7 +14,7 @@ export class VHSPauseEffectEngine extends Engine {
     if (started) {
       for (const vhs_pause_component of this.read_components_mutable(
         VHSPauseComponent
-      ).iterable()) {
+      ).values()) {
         if (!activated) {
           vhs_pause_component.amount = 1;
           vhs_pause_component.time += dt;
