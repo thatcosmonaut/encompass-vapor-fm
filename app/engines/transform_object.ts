@@ -1,9 +1,9 @@
+import { Space, Vector3 } from "babylonjs";
 import { Engine, Mutates, Reads } from "encompass-ecs";
 import { MeshComponent } from "../components/mesh_component";
 import { WrapScaleComponent } from "../components/wrap_scale";
 import { GrowObjectMessage } from "../messages/component/grow_object";
 import { RotateObjectMessage } from "../messages/component/rotate_object";
-import { Vector3, Space } from "babylonjs";
 
 @Reads(GrowObjectMessage, RotateObjectMessage)
 @Mutates(MeshComponent)

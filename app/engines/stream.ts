@@ -12,7 +12,7 @@ export class StreamEngine extends Engine {
   public update() {
     const stream_manager_component = this.read_component(StreamManagerComponent);
 
-    if (this.read_messages(ActivateStreamMessage).size > 0) {
+    if (this.some(ActivateStreamMessage)) {
       this.emit_message(ShowUIMessage);
       this.create_entity().add_component(ActivatedStreamComponent);
     }
@@ -21,7 +21,7 @@ export class StreamEngine extends Engine {
       stream_manager_component.stream_manager.load_and_play_audio();
     }
 
-    if (this.read_messages(DeactivateStreamMessage).size > 0) {
+    if (this.some(DeactivateStreamMessage)) {
       for (const activated_stream_components of this.read_components(
         ActivatedStreamComponent
       ).values()) {

@@ -27,9 +27,8 @@ export class IcecastDataEngine extends Engine {
       this.song_text_to_update = undefined;
     }
 
-    for (const icecast_timer_component of this.read_components_mutable(
-      IcecastTimerComponent
-    ).values()) {
+    const icecast_timer_component = this.read_component_mutable(IcecastTimerComponent);
+    if (icecast_timer_component) {
       icecast_timer_component.time_remaining -= dt;
 
       if (icecast_timer_component.time_remaining < 0) {
