@@ -18,9 +18,7 @@ export class ChannelNumberDisplayEngine extends Engine {
         }
       }
 
-      for (const show_channel_number_message of this.read_messages(
-        ShowChannelNumberMessage
-      ).values()) {
+      if (this.some(ShowChannelNumberMessage)) {
         channel_number_component.text_block.isVisible = true;
         channel_number_component.time = 5;
       }

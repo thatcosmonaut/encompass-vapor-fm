@@ -6,9 +6,8 @@ import { ShowUIMessage } from "../../messages/show_ui";
 @Mutates(LogoUIComponent)
 export class LogoDisplayEngine extends Engine {
   public update(dt: number) {
-    for (const logo_ui_component of this.read_components_mutable(
-      LogoUIComponent
-    ).values()) {
+    const logo_ui_component = this.read_component_mutable(LogoUIComponent);
+    if (logo_ui_component) {
       if (this.read_messages(ShowUIMessage).size > 0) {
         logo_ui_component.image.isVisible = true;
       }

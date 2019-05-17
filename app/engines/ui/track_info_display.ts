@@ -11,10 +11,9 @@ import { ShowUIMessage } from "../../messages/show_ui";
 @Mutates(ArtistInfoUIComponent, SongInfoUIComponent)
 export class TrackInfoDisplayEngine extends Engine {
   public update(dt: number) {
-    for (const artist_info_ui_component of this.read_components(
-      ArtistInfoUIComponent
-    ).values()) {
-      if (this.read_messages(ShowUIMessage).size > 0) {
+    const artist_info_ui_component = this.read_component_mutable(ArtistInfoUIComponent);
+    if (artist_info_ui_component) {
+      if (this.some(ShowUIMessage)) {
         artist_info_ui_component.text_block.isVisible = true;
       }
 
@@ -26,10 +25,9 @@ export class TrackInfoDisplayEngine extends Engine {
       }
     }
 
-    for (const song_info_ui_component of this.read_components(
-      SongInfoUIComponent
-    ).values()) {
-      if (this.read_messages(ShowUIMessage).size > 0) {
+    const song_info_ui_component = this.read_component_mutable(SongInfoUIComponent);
+    if (song_info_ui_component) {
+      if (this.some(ShowUIMessage)) {
         song_info_ui_component.text_block.isVisible = true;
       }
 

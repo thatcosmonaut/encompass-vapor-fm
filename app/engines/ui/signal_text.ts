@@ -7,18 +7,13 @@ import { LoadStreamMessage } from "../../messages/load_stream";
 @Mutates(SignalTextComponent)
 export class SignalTextEngine extends Engine {
   public update() {
-    if (this.read_messages(LoadStreamMessage).size > 0) {
-      for (const signal_text_component of this.read_components_mutable(
-        SignalTextComponent
-      ).values()) {
+    const signal_text_component = this.read_component_mutable(SignalTextComponent);
+    if (signal_text_component) {
+      if (this.some(LoadStreamMessage)) {
         signal_text_component.text_block.isVisible = true;
       }
-    }
 
-    if (this.read_messages(ActivateStreamMessage).size > 0) {
-      for (const signal_text_component of this.read_components_mutable(
-        SignalTextComponent
-      ).values()) {
+      if (this.some(ActivateStreamMessage)) {
         signal_text_component.text_block.isVisible = false;
       }
     }
