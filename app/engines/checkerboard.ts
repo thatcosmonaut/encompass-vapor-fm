@@ -15,7 +15,7 @@ export class CheckerboardEngine extends Engine {
                 const r = MathHelper.getRandomArbitrary(0.5, 1);
                 const g = MathHelper.getRandomArbitrary(0.5, 1);
                 const b = MathHelper.getRandomArbitrary(0.5, 1);
-                checkerboard_component.color = new Color3(r, g, b);
+                checkerboard_component.color.set(r, g, b);
             }
         }
     }

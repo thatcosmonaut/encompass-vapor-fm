@@ -14,7 +14,7 @@ export class ChannelUpdateEngine extends Engine {
     for (const component of this.read_components_mutable(
       ChannelsComponent
     ).values()) {
-      if (this.read_messages(TogglePauseMessage).size > 0) {
+      if (this.some(TogglePauseMessage)) {
         const pause_components = this.read_components(PauseComponent);
 
         if (pause_components.size > 0) {

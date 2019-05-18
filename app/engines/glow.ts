@@ -11,13 +11,13 @@ export class GlowEngine extends Detector {
         const material_component = entity.get_component(MaterialComponent);
         const glow_component = entity.get_component(GlowComponent);
 
-        if (this.read_messages(KickBeatMessage).size > 0) {
+        if (this.some(KickBeatMessage)) {
             if (Math.random() < 0.02) {
-                material_component.material.emissiveColor = new Color3(0, 0, 0.8);
+                material_component.material.emissiveColor.b = 0.9;
             }
         } else {
             const blue = material_component.material.emissiveColor.b;
-            material_component.material.emissiveColor = new Color3(0, 0, Math.max(blue - 0.4 * dt, 0.2));
+            material_component.material.emissiveColor.b = Math.max(blue - 0.4 * dt, 0.2);
         }
     }
 }

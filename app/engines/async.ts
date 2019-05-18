@@ -29,7 +29,7 @@ export class AsyncEngine extends Engine {
       }
     }
 
-    if (this.read_messages(LoadStreamMessage).size > 0) {
+    if (this.some(LoadStreamMessage)) {
       this.waiting_for_stream_load = true;
     }
   }

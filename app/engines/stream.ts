@@ -17,7 +17,7 @@ export class StreamEngine extends Engine {
       this.create_entity().add_component(ActivatedStreamComponent);
     }
 
-    if (stream_manager_component && this.read_messages(LoadStreamMessage).size > 0) {
+    if (stream_manager_component && this.some(LoadStreamMessage)) {
       stream_manager_component.stream_manager.load_and_play_audio();
     }
 
