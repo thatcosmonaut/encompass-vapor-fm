@@ -2,65 +2,38 @@ import {
   Color3,
   Color4,
   GlowLayer,
-  HemisphericLight,
   MeshBuilder,
-  PassPostProcess,
   PointLight,
-  Scene,
   StandardMaterial,
-  UniversalCamera,
   Vector3
 } from "babylonjs";
-import { World, WorldBuilder } from "encompass-ecs";
+import { WorldBuilder } from "encompass-ecs";
 import { AngularVelocityComponent } from "../components/angular_velocity";
-import { StreamManagerComponent } from "../components/beat_detector";
 import { BeatReactComponent } from "../components/beat_react";
+import { GlowComponent } from "../components/glow";
+import { MaterialComponent } from "../components/material";
 import { MeshComponent } from "../components/mesh_component";
-import { SceneComponent } from "../components/scene";
-import { ShrinkToSizeComponent } from "../components/shrink_to_size";
 import { AngularVelocityEngine } from "../engines/angular_velocity";
-import { BeatDetectorEngine } from "../engines/beat_detector";
 import { BeatReactEngine } from "../engines/beat_react";
 import { ChangeAngularVelocityEngine } from "../engines/change_angular_velocity";
 import { GlowEngine } from "../engines/glow";
 import { ShrinkToSizeEngine } from "../engines/shrink_to_size";
 import { TransformObjectEngine } from "../engines/transform_object";
-import { StreamManager } from "../helpers/stream_manager";
-import { SceneRenderer } from "../renderers/scene";
 import { Channel } from "./channel";
-import { GlowComponent } from "../components/glow";
-import { MaterialComponent } from "../components/material";
 
-export class CybergridState extends Channel {
-  private world: World;
-
-  public constructor(scene: Scene, stream_manager: StreamManager) {
-    super(scene, stream_manager);
-    const world_builder = new WorldBuilder();
+export class CybergridChannel extends Channel {
+  protected init() {
+    const world_builder = this.world_builder;
 
     world_builder.add_engine(ChangeAngularVelocityEngine);
     world_builder.add_engine(AngularVelocityEngine);
     world_builder.add_engine(TransformObjectEngine);
-    world_builder.add_engine(BeatDetectorEngine);
     world_builder.add_engine(BeatReactEngine);
     world_builder.add_engine(ShrinkToSizeEngine);
     world_builder.add_engine(GlowEngine);
 
-    world_builder.add_renderer(SceneRenderer);
-
-    const scene_entity = world_builder.create_entity();
-    const scene_component = scene_entity.add_component(SceneComponent);
-    scene_component.scene = scene;
-
-    const stream_manager_entity = world_builder.create_entity();
-    stream_manager_entity.add_component(StreamManagerComponent).stream_manager = stream_manager;
-
-    const camera = new UniversalCamera(
-      "sceneCamera",
-      new Vector3(0, 5, -20),
-      scene
-    );
-    camera.fov = 0.6;
+    this.camera.fov = 0.6;
+    this.camera.position.set(0, 5, -20);
 
     // const ambient_light = new HemisphericLight(
     //   "ambientLight",
@@ -70,23 +43,23 @@ export class CybergridState extends Channel {
     const point_light = new PointLight(
       "pointLight",
       new Vector3(0, 40, 0),
-      scene
+      this.scene
     );
 
-    const glow_layer = new GlowLayer("glow", scene);
+    const glow_layer = new GlowLayer("glow", this.scene);
 
-    this.generate_grid_lines(world_builder, -60, -60, 60, 60, 3);
+    this.generate_grid_lines(this.world_builder, -60, -60, 60, 60, 3);
 
     const pyramid = MeshBuilder.CreatePolyhedron("dodecahedron", {
       type: 3,
       size: 3.5
     });
     pyramid.position.set(0, 5, 50);
-    const pyramid_material = new StandardMaterial("pyramidMaterial", scene);
+    const pyramid_material = new StandardMaterial("pyramidMaterial", this.scene);
     pyramid.material = pyramid_material;
     this.scene.addMesh(pyramid);
 
-    const solid_entity = world_builder.create_entity();
+    const solid_entity = this.world_builder.create_entity();
     const mesh_component = solid_entity.add_component(MeshComponent);
     mesh_component.mesh = pyramid;
     const angular_velocity = solid_entity.add_component(
@@ -102,19 +75,7 @@ export class CybergridState extends Channel {
     beat_react_component.reverse_y = true;
     beat_react_component.reverse_z = true;
 
-    scene.clearColor = new Color4(0, 0, 0, 1);
-
-    this.channelPass = new PassPostProcess("Scene copy", 1.0, camera);
-
-    this.world = world_builder.build();
-  }
-
-  public update(dt: number) {
-    this.world.update(dt);
-  }
-
-  public draw() {
-    this.world.draw();
+    this.scene.clearColor = new Color4(0, 0, 0, 1);
   }
 
   private generate_tube_material() {

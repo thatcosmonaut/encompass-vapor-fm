@@ -1,14 +1,9 @@
 import {
-  BaseTexture,
   Color4,
-  FxaaPostProcess,
   MeshBuilder,
-  PassPostProcess,
   PostProcess,
   Scene,
   Texture,
-  UniversalCamera,
-  Vector3
 } from "babylonjs";
 import {
   AdvancedDynamicTexture,
@@ -17,46 +12,27 @@ import {
   Line,
   TextBlock
 } from "babylonjs-gui";
-import { World, WorldBuilder } from "encompass-ecs";
 import { RippleEffectComponent } from "../components/ripple_effect";
-import { SceneComponent } from "../components/scene";
 import { RippleEffectEngine } from "../engines/ripple_effect";
 import { StreamManager } from "../helpers/stream_manager";
 import { SceneRenderer } from "../renderers/scene";
 import { Channel } from "./channel";
 
 export class StartChannel extends Channel {
-  private world: World;
+  protected init() {
+    this.world_builder.add_engine(RippleEffectEngine);
+    this.world_builder.add_renderer(SceneRenderer);
 
-  public constructor(scene: Scene, stream_manager: StreamManager) {
-    super(scene, stream_manager);
+    this.scene.clearColor = new Color4(164 / 255, 213 / 255, 245 / 255, 1);
 
-    const world_builder = new WorldBuilder();
-
-    world_builder.add_engine(RippleEffectEngine);
-
-    world_builder.add_renderer(SceneRenderer);
-
-    const scene_entity = world_builder.create_entity();
-    const scene_component = scene_entity.add_component(SceneComponent);
-    scene_component.scene = scene;
-
-    scene.clearColor = new Color4(164 / 255, 213 / 255, 245 / 255, 1);
-
-    const camera = new UniversalCamera(
-      "startChannelCamera",
-      new Vector3(),
-      scene
-    );
-    camera.fov = 1.3;
+    this.camera.fov = 1.3;
+    this.camera.position.z = -225;
 
     const plane = MeshBuilder.CreatePlane("texturePlane", {
       size: 600
     });
     plane.position.set(0, 0, 0);
-    scene.addMesh(plane);
-
-    camera.position.z = -225;
+    this.scene.addMesh(plane);
 
     const ui = AdvancedDynamicTexture.CreateForMesh(plane, 600, 600, false);
     ui.background = "#a4d5f5";
@@ -125,7 +101,7 @@ export class StartChannel extends Channel {
 
     // new FxaaPostProcess("fxaa", 1.0, camera);
 
-    const postprocess_entity = world_builder.create_entity();
+    const postprocess_entity = this.world_builder.create_entity();
     const ripple_component = postprocess_entity.add_component(
       RippleEffectComponent
     );
@@ -136,10 +112,10 @@ export class StartChannel extends Channel {
       ["time", "screenSize"],
       ["iChannel1", "iChannel2"],
       1.0,
-      camera
+      this.camera
     );
-    const noise_texture = new Texture("./assets/images/rgba-noise.png", scene);
-    const cube_map_texture = new Texture("./assets/images/cubemap.png", scene);
+    const noise_texture = new Texture("./assets/images/rgba-noise.png", this.scene);
+    const cube_map_texture = new Texture("./assets/images/cubemap.png", this.scene);
 
     ripple_effect.onApply = effect => {
       effect.setFloat2("screenSize", window.innerWidth, window.innerHeight);
@@ -148,17 +124,5 @@ export class StartChannel extends Channel {
       effect.setFloat("time", ripple_component.time);
     };
     ripple_component.effect = ripple_effect;
-
-    this.channelPass = new PassPostProcess("pass", 1.0, camera);
-
-    this.world = world_builder.build();
-  }
-
-  public update(dt: number) {
-    this.world.update(dt);
-  }
-
-  public draw() {
-    this.world.draw();
   }
 }

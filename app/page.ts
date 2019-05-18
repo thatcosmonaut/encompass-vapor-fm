@@ -24,8 +24,9 @@ import {
 import { World, WorldBuilder } from "encompass-ecs";
 import { BustState } from "./channels/bust";
 import { Channel } from "./channels/channel";
-import { CybergridState } from "./channels/cybergrid";
+import { CybergridChannel } from "./channels/cybergrid";
 import { DarkBustState } from "./channels/dark_bust";
+import { EndlessHallChannel } from "./channels/endless_hall";
 import { NoiseChannel } from "./channels/noise";
 import { StartChannel } from "./channels/start";
 import { BadTVEffectComponent } from "./components/bad_tv_effect";
@@ -100,20 +101,27 @@ export class Page {
         StreamManagerComponent
       ).stream_manager = this.stream_manager;
 
-    const start_channel = new StartChannel(
+    const start_channel = StartChannel.create(
       new Scene(engine),
       this.stream_manager
     );
-    const bust_state = new BustState(new Scene(engine), this.stream_manager);
-    const cybergrid_state = new CybergridState(
+    const bust_state = BustState.create(
       new Scene(engine),
       this.stream_manager
     );
-    const dark_bust_state = new DarkBustState(
+    const cybergrid_state = CybergridChannel.create(
       new Scene(engine),
       this.stream_manager
     );
-    const noise_channel = new NoiseChannel(
+    const dark_bust_state = DarkBustState.create(
+      new Scene(engine),
+      this.stream_manager
+    );
+    const noise_channel = NoiseChannel.create(
+      new Scene(engine),
+      this.stream_manager
+    );
+    const endless_hall_channel = EndlessHallChannel.create(
       new Scene(engine),
       this.stream_manager
     );
@@ -124,7 +132,7 @@ export class Page {
     channels.set(4, noise_channel);
     channels.set(5, cybergrid_state);
     channels.set(6, noise_channel);
-    channels.set(7, noise_channel);
+    channels.set(7, endless_hall_channel);
     channels.set(8, dark_bust_state);
     channels.set(9, noise_channel);
     channels.set(10, noise_channel);
