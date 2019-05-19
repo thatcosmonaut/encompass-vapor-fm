@@ -1,4 +1,3 @@
-import { Color3 } from "babylonjs";
 import { Engine, Mutates, Reads } from "encompass-ecs";
 import { CheckerboardComponent } from "../components/checkerboard";
 import { MathHelper } from "../helpers/math";

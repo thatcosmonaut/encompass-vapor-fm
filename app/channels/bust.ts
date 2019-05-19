@@ -22,7 +22,6 @@ import { ChangeAngularVelocityEngine } from "../engines/change_angular_velocity"
 import { GrowthDetector } from "../engines/growth";
 import { ShrinkToSizeEngine } from "../engines/shrink_to_size";
 import { TransformObjectEngine } from "../engines/transform_object";
-import { StreamManager } from "../helpers/stream_manager";
 import { Channel } from "./channel";
 
 export class BustState extends Channel {

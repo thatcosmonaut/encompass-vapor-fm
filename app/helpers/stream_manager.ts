@@ -102,8 +102,7 @@ export class StreamManager {
 
       this.beat_detector = new BeatDetector(
         this.analyser.frequencyBinCount,
-        this.context.sampleRate,
-        this.floats
+        this.context.sampleRate
       );
       this.beat_detector.setSensitivity(300);
 

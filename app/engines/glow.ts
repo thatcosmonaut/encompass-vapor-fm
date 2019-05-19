@@ -1,4 +1,3 @@
-import { Color3 } from "babylonjs";
 import { Detector, Entity, Reads } from "encompass-ecs";
 import { GlowComponent } from "../components/glow";
 import { MaterialComponent } from "../components/material";

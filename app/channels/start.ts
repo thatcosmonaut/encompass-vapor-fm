@@ -2,7 +2,6 @@ import {
   Color4,
   MeshBuilder,
   PostProcess,
-  Scene,
   Texture,
 } from "babylonjs";
 import {
@@ -14,7 +13,6 @@ import {
 } from "babylonjs-gui";
 import { RippleEffectComponent } from "../components/ripple_effect";
 import { RippleEffectEngine } from "../engines/ripple_effect";
-import { StreamManager } from "../helpers/stream_manager";
 import { SceneRenderer } from "../renderers/scene";
 import { Channel } from "./channel";
 

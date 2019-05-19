@@ -1,6 +1,4 @@
-import {
-  PostProcess,
-} from "babylonjs";
+import { PostProcess } from "babylonjs";
 import { NoiseComponent } from "../components/noise";
 import { NoiseEngine } from "../engines/noise";
 import { Channel } from "./channel";

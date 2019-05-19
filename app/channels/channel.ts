@@ -1,5 +1,5 @@
 import { PassPostProcess, PostProcess, Scene, UniversalCamera, Vector3 } from "babylonjs";
-import { Type, World, WorldBuilder } from "encompass-ecs";
+import { World, WorldBuilder } from "encompass-ecs";
 import { StreamManagerComponent } from "../components/beat_detector";
 import { SceneComponent } from "../components/scene";
 import { BeatDetectorEngine } from "../engines/beat_detector";

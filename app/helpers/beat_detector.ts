@@ -3,8 +3,7 @@ export class BeatDetector {
 
   constructor(
     frequencyBinCount: number,
-    sampleRate: number,
-    floats: Float32Array
+    sampleRate: number
   ) {
     this.beatdetect = new FFT.BeatDetect(frequencyBinCount, sampleRate);
   }
