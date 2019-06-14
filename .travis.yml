@@ -7,7 +7,7 @@ before_install:
   -in deploy_rsa.enc -out deploy_rsa -d
 
 addons:
-  ssh_known_hosts: "<deploy-host>"
+  ssh_known_hosts: "$deploy_host"
 
 before_deploy:
 - openssl aes-256-cbc -K $encrypted_c16a6fbb8a30_key -iv $encrypted_c16a6fbb8a30_iv -in deploy_rsa.enc
@@ -22,6 +22,6 @@ script:
 deploy:
   provider: script
   skip_cleanup: true
-  script: rsync -a --delete-after --quiet $TRAVIS_BUILD_DIR/dist/ <ssh-user>@<deploy-host>:/var/www/html
+  script: rsync -a --delete-after --quiet $TRAVIS_BUILD_DIR/dist/ $ssh_user@$deploy_host:/var/www/html
   on:
     branch: master
