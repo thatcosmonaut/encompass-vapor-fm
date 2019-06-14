@@ -2,6 +2,8 @@
   "name": "vapor-fm-frontend",
   "version": "0.1.0",
   "description": "the frontend for vapor.fm",
+  "author": "thatcosmonaut",
+  "license": "UNLICENSED",
   "main": "main.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -15,8 +17,7 @@
     "build": "webpack --config webpack/prod.config.js",
     "start:dev": "webpack-dev-server --config webpack/dev.config.js"
   },
-  "author": "ehemsley",
-  "license": "UNLICENSED",
+
   "devDependencies": {
     "ccapture.js": "github:aceslowman/ccapture.js#npm-fix",
     "prettier": "^1.17.0",
@@ -34,6 +35,6 @@
     "babylonjs": "^4.0.3",
     "babylonjs-gui": "^4.0.3",
     "babylonjs-loaders": "^4.0.3",
-    "encompass-ecs": "^0.22.2"
+    "encompass-ecs": "^0.27.2"
   }
 }

@@ -1,5 +1,5 @@
 import { Emits, Engine } from "encompass-ecs";
-import { GCOptimizedMap } from "tstl-gc-optimized-collections";
+import { GCOptimizedMap } from "encompass-gc-optimized-collections";
 import { ActivatedStreamComponent } from "../components/activated_stream";
 import { StartedComponent } from "../components/started";
 import { ChangeChannelMessage } from "../messages/change_channel";

@@ -1,5 +1,5 @@
 import { ComponentModifier, Mutates, Reads } from "encompass-ecs";
-import { GCOptimizedSet } from "tstl-gc-optimized-collections";
+import { GCOptimizedList } from "encompass-gc-optimized-collections";
 import { AngularVelocityComponent } from "../components/angular_velocity";
 import { ChangeAngularVelocityMessage } from "../messages/component/change_angular_velocity";
 import { TogglePauseMessage } from "../messages/pause";
@@ -11,10 +11,10 @@ export class ChangeAngularVelocityEngine extends ComponentModifier {
 
   protected modify(
     component: AngularVelocityComponent,
-    messages: GCOptimizedSet<ChangeAngularVelocityMessage>,
+    messages: GCOptimizedList<ChangeAngularVelocityMessage>,
     dt: number
   ) {
-    for (const message of messages.entries()) {
+    for (const message of messages.values()) {
       if (message.x) {
         component.x = message.x;
       }

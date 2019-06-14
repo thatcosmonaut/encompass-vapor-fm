@@ -20,11 +20,6 @@
   },
   "include": [
     "./app/**/*.ts",
-    "node_modules/encompass-ecs",
     "app/declarations"
-    // "node_modules/tstl-gc-optimized-collections"
-  ],
-  "exclude": [
-    "node_modules/encompass-ecs/test/*.ts",
   ]
 }
