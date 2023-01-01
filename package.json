@@ -22,13 +22,13 @@
     "ccapture.js": "github:aceslowman/ccapture.js#npm-fix",
     "prettier": "^1.17.0",
     "shx": "^0.3.2",
-    "ts-loader": "^5.4.5",
+    "ts-loader": "^9.4.2",
     "tslint": "^5.15.0",
     "tslint-config-prettier": "^1.18.0",
     "tslint-no-circular-imports": "^0.6.2",
     "typescript": "^3.4.5",
-    "webpack": "^4.30.0",
-    "webpack-cli": "^3.3.2",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1",
     "webpack-dev-server": "^3.3.1"
   },
   "dependencies": {
